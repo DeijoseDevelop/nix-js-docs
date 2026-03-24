@@ -85,9 +85,24 @@ body {
 }
 
 .sb-top {
-  padding: 20px 18px 14px;
+  padding: 16px 18px 14px;
   border-bottom: 1px solid var(--bd);
   flex-shrink: 0
+}
+
+.sb-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  margin-bottom: 2px;
+}
+
+.sb-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .sb-logo {

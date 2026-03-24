@@ -92,7 +92,10 @@ function App(): NixTemplate {
       <!-- ── SIDEBAR ── -->
       <aside id="sb">
         <div class="sb-top">
-          <div class="sb-logo">Nix<em>.</em>js</div>
+          <a href="/" class="sb-brand">
+            <img src="/nix-js-logo.png" alt="Nix.js Logo" class="sb-logo-img">
+            <div class="sb-logo">Nix<em>.</em>js</div>
+          </a>
           <div class="sb-ver">v1.7.9 — documentation</div>
           <div class="sb-search">
             <span class="sb-search-ic">⌕</span>
