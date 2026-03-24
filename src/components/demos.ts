@@ -233,13 +233,26 @@ export function DemoTodo(): NixTemplate {
         ${() => done.value} / ${() => todos.value.length} done
         <div class="prog"><div class="prog-f" style=${() => `width:${todos.value.length ? (done.value / todos.value.length * 100) : 0}%`}></div></div>
       </div>
-      ${() => repeat(todos.value, t => t.id, t => html`
-        <div class="todo-row">
-          <div class=${() => 'tck' + (t.done ? ' on' : '')} @click=${() => toggle(t.id)}>${() => t.done ? '✓' : ''}</div>
-          <span style=${() => t.done ? 'text-decoration:line-through;color:var(--tx3);flex:1' : 'flex:1'}>${t.text}</span>
-          <span class="tdel" @click=${() => remove(t.id)}>×</span>
-        </div>
-      `)}
+      ${() => repeat(todos.value, t => t.id, (tInitial) => {
+        const t = computed(() => todos.value.find(item => item.id === tInitial.id) || tInitial);
+
+        return html`
+          <div class="todo-row">
+            <div 
+              class=${() => 'tck' + (t.value.done ? ' on' : '')} 
+              @click=${() => toggle(tInitial.id)}
+            >
+              ${() => t.value.done ? '✓' : ''}
+            </div>
+            
+            <span style=${() => t.value.done ? 'text-decoration:line-through;color:var(--tx3);flex:1' : 'flex:1'}>
+              ${tInitial.text}
+            </span>
+            
+            <span class="tdel" @click=${() => remove(tInitial.id)}>×</span>
+          </div>
+        `;
+      })}
     </div>
   `;
 }

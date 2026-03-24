@@ -27,12 +27,12 @@ export function InstallPage(): NixTemplate {
 
   function App() {
     const count = signal(0);
-    return html\\\`
+    return html\`
       <div>
-        <h1>Count: \\\${() => count.value}</h1>
-        <button @click=\\\${() => count.value++}>Increment</button>
+        <h1>Count: \${() => count.value}</h1>
+        <button @click=\${() => count.value++}>Increment</button>
       </div>
-    \\\`;
+    \`;
   }
 
   mount(App(), '#app');

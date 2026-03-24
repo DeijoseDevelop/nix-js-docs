@@ -15,17 +15,15 @@ function App() {
 
 mount(App(), '#app');`.trim();
 S.signal_fn = `
-// Function component — signals close over the function scope
 function Counter() {
   const count = signal(0);
 
   count.value;               // get → 0
-  count.value = 5;           // set → notifies all subscribers
-  count.update(n => n + 1); // atomic updater: fn(current) → next
-  count.peek();              // read WITHOUT creating a subscription
-  count.dispose();           // permanently remove all subscribers
+  count.value = 5;           // set
+  count.update(n => n + 1); // update
+  count.peek();              // peek
+  count.dispose();           // dispose
 
-  // Object.is equality: setting same value is a no-op
   count.value = 5; // skipped if already 5
 
   return html\`<p>\${() => count.value}</p>\`;
@@ -36,13 +34,11 @@ function PriceCalculator() {
   const price    = signal(10);
   const quantity = signal(3);
 
-  // computed() — lazily cached, auto-updates when deps change
   const subtotal = computed(() => price.value * quantity.value);
   const tax      = computed(() => subtotal.value * 0.16);
   const total    = computed(() => subtotal.value + tax.value);
 
-  // Computed signals are read-only — writing throws a TypeError
-  // total.value = 99; // ❌ TypeScript error
+  // total.value = 99; // ❌ throws TypeError
 
   return html\`
     <div>
@@ -63,12 +59,10 @@ class AutoSaveForm extends NixComponent {
   private _timer = 0;
 
   onMount() {
-    // effect() runs immediately, re-runs when any read signal changes
     const dispose = effect(() => {
-      const _ = this.draft.value; // subscribe
+      const _ = this.draft.value;
       this.saved.value = false;
 
-      // Return a cleanup fn — called before each re-run and on dispose
       return () => clearTimeout(this._timer);
     });
 
@@ -100,14 +94,6 @@ function UserProfileEditor() {
   const lastName  = signal('José');
   const age       = signal(24);
 
-  // Without batch: updateAll() triggers 3 separate effect flushes
-  const updateAllSlow = () => {
-    firstName.value = 'María';
-    lastName.value  = 'López';
-    age.value       = 28;
-  };
-
-  // With batch: only ONE flush at the end — much more efficient
   const updateAll = () => {
     batch(() => {
       firstName.value = 'María';
@@ -126,16 +112,14 @@ S.watch_fn = `
 function ThemeWatcher() {
   const theme = signal('dark');
 
-  // watch() → receives (newValue, oldValue), does NOT run on init
   const stopWatch = watch(theme, (next, prev) => {
     console.log(\`Theme: \${prev} → \${next}\`);
     document.body.dataset.theme = next;
   });
 
-  // Options
   watch(theme, val => applyTheme(val), {
-    immediate: true, // run callback immediately with current value
-    once:      true, // auto-dispose after first invocation
+    immediate: true,
+    once:      true,
   });
 
   // Watch a computed expression (not just a signal)
@@ -157,10 +141,7 @@ function SmartLogger() {
   const logLevel = signal('info');
 
   effect(() => {
-    // Subscribed — this effect re-runs when 'data' changes
     const items = data.value.items;
-
-    // NOT subscribed — changing logLevel won't re-run this effect
     const level = untrack(() => logLevel.value);
 
     if (level !== 'silent') {
@@ -951,15 +932,11 @@ function LogTracker() {
   const count = signal(0);
   const label = signal('anonymous');
 
-  // effect() runs immediately, re-runs when any read signal changes
   const dispose = effect(() => {
     console.log(\`[\${label.value}] count = \${count.value}\`);
-
-    // Return a cleanup fn — runs before each re-run & on dispose
-    return () => console.log('cleaning up previous effect');
+    return () => console.log('cleaning up');
   });
 
-  // Disposing stops all future re-runs
   dispose();
 
   return html\`
@@ -973,10 +950,7 @@ function Greeting(): NixTemplate {
 
   return html\`
     <div>
-      <!-- Static: inserted once -->
-      <h1>Nix.js Template</h1>
-
-      <!-- Reactive: updates when signal changes -->
+      <h1>Nix.js</h1>
       <p>Hello, \${() => name.value}!</p>
 
       <input
@@ -1000,9 +974,8 @@ import { ref } from '@deijose/nix-js';
 function AutoFocusInput(): NixTemplate {
   const inputRef = ref<HTMLInputElement>();
 
-  // After mount, ref.el contains the live DOM element
   return html\`
-    <input ref=\${inputRef} placeholder="I'll be focused on mount" />
+    <input ref=\${inputRef} />
   \`;
 }
 
@@ -1035,10 +1008,7 @@ function App(): NixTemplate {
   \`;
 }
 
-// Mount into a CSS selector or DOM element
 const handle = mount(App(), '#app');
-
-// Later: cleanly remove from DOM
 handle.unmount();`.trim();
 
 S.form_field = S.forms_custom;
@@ -1056,15 +1026,13 @@ function App(): NixTemplate {
         \${new Link('/users', 'Users')}
       </nav>
       <main>
-        <!-- RouterView renders the matched route component -->
         \${new RouterView()}
       </main>
     </div>
   \`;
 }
 
-// Link automatically adds an "active" class when the route matches
-// RouterView(0) = top level, RouterView(1) = nested child`.trim();
+// Link adds "active" class automatically when route matches`.trim();
 
 S.async_suspend = S.suspend_fn;
 S.async_query = S.query_fn;
@@ -1102,10 +1070,9 @@ function ProductList(): NixTemplate {
 S.async_lazy = `
 import { lazy } from '@deijose/nix-js';
 
-// lazy() wraps a dynamic import → code-split chunk
 const AdminPage = lazy(
   () => import('./pages/AdminPage'),
-  html\`<div class="spinner">Loading…</div>\`  // optional fallback
+  html\`<div class="spinner">Loading…</div>\`
 );
 
 // Use inside routes:
@@ -1126,14 +1093,8 @@ function TogglePanel(): NixTemplate {
   const loading = signal(false);
 
   return html\`
-    <button @click=\${() => open.update(v => !v)}>
-      \${() => open.value ? 'Hide panel' : 'Show panel'}
     </button>
 
-    <!--
-      show/hide: element STAYS in DOM, only display toggles.
-      State, input values, event listeners — all preserved.
-    -->
     <div show=\${() => open.value} class="panel">
       <input placeholder="Your text is saved when hidden!" />
       <p>This panel preserves all state on toggle.</p>

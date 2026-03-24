@@ -1104,7 +1104,7 @@ pre::-webkit-scrollbar-thumb {
 .tck.on {
   background: var(--green);
   border-color: var(--green);
-  color: #000
+  color: #FFF
 }
 
 .tdel {
