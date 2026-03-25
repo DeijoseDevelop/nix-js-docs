@@ -2,7 +2,7 @@
 
 The official documentation and live examples for the **Nix.js** micro-framework. Built 100% with Nix.js, demonstrating the power of signals and tagged templates for real-world applications.
 
-> **[Visit Live Documentation →](https://nix-js-landing.vercel.app/)**
+> **[Visit Live Documentation →](https://nix-js.dev/)**
 
 ---
 
