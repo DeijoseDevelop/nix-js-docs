@@ -397,7 +397,7 @@ function DashboardPage(): NixTemplate {
       .setSlot('header', html\`<h1>Dashboard</h1>\`)
       .setSlot('nav',    html\`<nav><a href="/">Home</a></nav>\`)
       .setChildren(      html\`<p>Main dashboard content here</p>\`)
-      .setSlot('footer', html\`<small>Nix.js v1.7.9</small>\`)
+      .setSlot('footer', html\`<small>Nix.js v1.8.1</small>\`)
     }
   \`;
 }`.trim();

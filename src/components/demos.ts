@@ -348,7 +348,7 @@ export function DemoRouter(): NixTemplate {
   interface Route { path: string; render: () => NixTemplate; }
   const routes: Route[] = [
     { path: '/', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">🏠 Home</h4><p style="color:var(--tx2);font-size:13px">Welcome! Use the nav links above.</p><div class="row"><button class="btn btn-p btn-sm" @click=${() => nav('/users/42')}>Go to User 42</button></div></div>` },
-    { path: '/about', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">📄 About</h4><p style="color:var(--tx2);font-size:13px">Nix.js — a signal-based micro-framework. v1.7.9</p></div>` },
+    { path: '/about', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">📄 About</h4><p style="color:var(--tx2);font-size:13px">Nix.js — a signal-based micro-framework. v1.8.1</p></div>` },
     { path: '/users/:id', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">👤 User <span style="color:var(--ac2)">#${() => params.value.id}</span></h4><div class="row">${[1,7,42,99].map(id => html`<button class="btn btn-o btn-sm" @click=${() => nav('/users/'+id)}>User ${id}</button>`)}</div></div>` },
   ];
 

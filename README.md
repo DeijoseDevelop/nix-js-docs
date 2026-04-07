@@ -51,4 +51,4 @@ npm run build
 ---
 
 *Built with passion by [Deiver Vasquez](https://github.com/DeijoseDevelop).*
-*Nix.js v1.7.9*
+*Nix.js v1.8.1*
