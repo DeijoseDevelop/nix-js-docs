@@ -16,7 +16,7 @@ export function IntroPage(): NixTemplate {
         <h1>Nix<em>.</em>js</h1>
         <p class="hero-desc">A signal-based micro-framework for building modern web UIs. No virtual DOM, no compiler, no build-time magic — just signals, tagged templates, and pure TypeScript.</p>
         <div class="hero-tags">
-          <span class="badge"><span class="bdot" style="background:var(--green)"></span>221 tests passing</span>
+          <span class="badge"><span class="bdot" style="background:var(--green)"></span>413 tests passing</span>
           <span class="badge"><span class="bdot" style="background:var(--ac3)"></span>~10 KB gzipped</span>
           <span class="badge"><span class="bdot" style="background:var(--ac2)"></span>TypeScript-first</span>
           <span class="badge"><span class="bdot" style="background:var(--gold)"></span>Zero dependencies</span>
