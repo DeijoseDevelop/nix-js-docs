@@ -38,19 +38,24 @@ export function RouterPage(): NixTemplate {
       <p>Use <code>mode: "hash"</code> when your hosting environment cannot rewrite all routes to <code>index.html</code>. In this mode, the router reads from <code>location.hash</code> and listens to <code>hashchange</code>.</p>
       ${new CodeBlock(S.router_mode)}
 
+      <h3>Named Routes</h3>
+      <p>Define <code>name</code> in your routes and navigate with objects instead of hardcoded strings. This improves refactors and keeps dynamic params explicit.</p>
+      ${new CodeBlock(S.router_named)}
+
       <div class="tbl">
         <table>
           <tr><th>Property / Method</th><th>Type</th><th>Description</th></tr>
           <tr><td><code>router.current</code></td><td>Signal&lt;string&gt;</td><td>Active pathname (/users/42)</td></tr>
           <tr><td><code>router.params</code></td><td>Signal&lt;Record&lt;string,string&gt;&gt;</td><td>Dynamic route params ({ id: "42" })</td></tr>
           <tr><td><code>router.query</code></td><td>Signal&lt;Record&lt;string,string&gt;&gt;</td><td>Query string params ({ tab: "posts" })</td></tr>
-          <tr><td><code>router.navigate(path, query?)</code></td><td>void</td><td>Navigate via pushState</td></tr>
-          <tr><td><code>router.replace(path, query?)</code></td><td>void</td><td>Navigate via replaceState</td></tr>
+          <tr><td><code>router.navigate(location, query?)</code></td><td>void</td><td>Navigate via pushState using string path or named location</td></tr>
+          <tr><td><code>router.replace(location, query?)</code></td><td>void</td><td>Navigate via replaceState using string path or named location</td></tr>
           <tr><td><code>router.back() / forward() / go(n)</code></td><td>void</td><td>History navigation</td></tr>
           <tr><td><code>router.isActive(path, exact?)</code></td><td>boolean</td><td>Check if a path is active</td></tr>
           <tr><td><code>router.resolve(path)</code></td><td>{ matched, params, route }</td><td>Inspect route match and access <code>route.meta</code></td></tr>
           <tr><td><code>options.mode</code></td><td><code>"history" | "hash"</code></td><td>URL strategy. <code>history</code> by default</td></tr>
           <tr><td><code>options.scrollBehavior(to, from, saved)</code></td><td>ScrollPosition | false | void</td><td>Customize navigation scroll behavior</td></tr>
+          <tr><td><code>RouteRecord.name?</code></td><td>string</td><td>Optional stable route name used by named navigation</td></tr>
           <tr><td><code>router.beforeEach(guard)</code></td><td>() =&gt; void</td><td>Global guard; returns removal fn</td></tr>
           <tr><td><code>router.afterEach(hook)</code></td><td>() =&gt; void</td><td>Post-navigation hook</td></tr>
         </table>

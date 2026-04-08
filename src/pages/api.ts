@@ -41,7 +41,7 @@ export function APIPage(): NixTemplate {
       <div class="tbl"><table>
         <tr><th>Export</th><th>Description</th></tr>
         <tr><td><code>NixComponent</code></td><td>Base class with onInit/render/onMount/onUnmount/onError</td></tr>
-        <tr><td><code>mount(tpl, container)</code></td><td>Mount template or component; returns { unmount() }</td></tr>
+        <tr><td><code>mount(component, container, options?)</code></td><td>Mount template or component; optional DI options (for example: <code>{ router }</code>)</td></tr>
         <tr><td><code>.setChildren(content)</code></td><td>Pass default slot content (chainable)</td></tr>
         <tr><td><code>.setSlot(name, content)</code></td><td>Pass named slot content (chainable)</td></tr>
       </table></div>
@@ -51,13 +51,16 @@ export function APIPage(): NixTemplate {
         <tr><th>Export</th><th>Description</th></tr>
         <tr><td><code>createRouter(routes)</code></td><td>Initialize router singleton; call once at startup</td></tr>
         <tr><td><code>useRouter()</code></td><td>Access the active router from any component</td></tr>
+        <tr><td><code>RouterKey</code></td><td>Injection key used when mounting with <code>{ router }</code></td></tr>
         <tr><td><code>RouterView(depth?)</code></td><td>Renders matched route at given nesting depth</td></tr>
         <tr><td><code>Link(path, label)</code></td><td>Reactive anchor with automatic active styling</td></tr>
-        <tr><td><code>router.navigate(path, q?)</code></td><td>Navigate via history.pushState</td></tr>
+        <tr><td><code>router.navigate(location, q?)</code></td><td>Navigate via history.pushState (string path or named route location)</td></tr>
+        <tr><td><code>router.replace(location, q?)</code></td><td>Navigate via history.replaceState (string path or named route location)</td></tr>
         <tr><td><code>router.resolve(path)</code></td><td>Inspect match result ({ matched, params, route }) including route meta</td></tr>
         <tr><td><code>createRouter(routes, { mode: "hash" })</code></td><td>Enable hash-based routing strategy</td></tr>
         <tr><td><code>createRouter(routes, { scrollBehavior })</code></td><td>Customize scroll restoration using saved back/forward positions</td></tr>
         <tr><td><code>router.beforeEach(guard)</code></td><td>Register global guard; returns removal fn</td></tr>
+        <tr><td><code>RouteRecord.name?</code></td><td>Optional named route identifier for typed navigation</td></tr>
         <tr><td><code>RouteRecord.meta?</code></td><td>Optional metadata object available on matched route</td></tr>
       </table></div>
 

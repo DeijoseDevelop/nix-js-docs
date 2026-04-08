@@ -498,11 +498,11 @@ S.router_setup = `
 import { createRouter, RouterView, Link, useRouter } from '@deijose/nix-js';
 
 const router = createRouter([
-  { path: '/',          component: () => HomePage()       },
-  { path: '/about',     component: () => AboutPage()      },
-  { path: '/users',     component: () => UsersPage()      },
-  { path: '/users/:id', component: () => UserDetailPage() },
-  { path: '*',          component: () => NotFoundPage()   },
+  { name: 'home',        path: '/',          component: () => HomePage()       },
+  { name: 'about',       path: '/about',     component: () => AboutPage()      },
+  { name: 'users',       path: '/users',     component: () => UsersPage()      },
+  { name: 'user-detail', path: '/users/:id', component: () => UserDetailPage() },
+  { path: '*',           component: () => NotFoundPage()   },
 ]);
 
 function App(): NixTemplate {
@@ -520,7 +520,28 @@ function App(): NixTemplate {
   \`;
 }
 
-mount(App(), '#app');`.trim();
+mount(App(), '#app', { router });`.trim();
+
+S.router_named = `
+const router = createRouter([
+  { name: 'home',        path: '/',          component: () => HomePage() },
+  { name: 'user-detail', path: '/users/:id', component: () => UserDetailPage() },
+  { name: 'search',      path: '/search',    component: () => SearchPage() },
+]);
+
+router.navigate({ name: 'user-detail', params: { id: 42 } });
+router.navigate({ name: 'search', query: { q: 'nix', page: 1 } });
+router.replace({ name: 'user-detail', params: { id: '99' } });
+
+// query merge with second argument
+router.navigate(
+  { name: 'search', query: { q: 'nix' } },
+  { page: 2, from: 'navbar' }
+);
+
+// String paths still work (non-breaking)
+router.navigate('/users/42');
+`.trim();
 
 S.router_params = `
 function UserDetailPage(): NixTemplate {
