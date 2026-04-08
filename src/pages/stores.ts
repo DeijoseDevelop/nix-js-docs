@@ -8,13 +8,21 @@ export function StoresPage(): NixTemplate {
   return html`
     <div>
       <h2 class="page-title">Global Stores</h2>
-      <p class="page-sub">Reactive global state with <code>createStore()</code>. Every property becomes a <code>Signal</code>. Optional typed actions.</p>
+      <p class="page-sub">Reactive global state with <code>createStore()</code>. Every property becomes a <code>Signal</code>. Optional typed actions, computed getters, and global subscriptions.</p>
 
       <h3>Basic Store</h3>
       ${new CodeBlock(S.store_basic)}
 
       <h3>Store with Actions</h3>
       ${new CodeBlock(S.store_actions)}
+
+      <h3>Computed Getters (third argument)</h3>
+      <p>Use the optional third factory to expose derived values as <code>computed()</code> signals on the store.</p>
+      ${new CodeBlock(S.store_getters)}
+
+      <h3>Subscriptions (middleware pattern)</h3>
+      <p><code>$subscribe</code> listens to every state signal change and returns an unsubscribe function. Useful for persistence, devtools, and logging middleware.</p>
+      ${new CodeBlock(S.store_subscribe)}
 
       <div class="tbl">
         <table>
@@ -23,6 +31,7 @@ export function StoresPage(): NixTemplate {
           <tr><td><code>store.$state</code></td><td>Reactive read-only snapshot of all values</td></tr>
           <tr><td><code>store.$reset()</code></td><td>Restore all signals to initial values</td></tr>
           <tr><td><code>store.$patch(partial)</code></td><td>Batch-update multiple signals at once</td></tr>
+          <tr><td><code>store.$subscribe((key, newVal, oldVal) =&gt; ...)</code></td><td>Watch all state keys; returns unsubscribe</td></tr>
         </table>
       </div>
 
@@ -34,6 +43,8 @@ export function StoresPage(): NixTemplate {
           <li>Export stores as module-level singletons — no React Context or DI needed</li>
           <li>Use <code>$patch()</code> for updating multiple signals atomically</li>
           <li>Use actions for complex mutations involving multiple signals</li>
+          <li>Use third-arg getters for derived state exposed as reusable computed signals</li>
+          <li>Use <code>$subscribe()</code> for persistence/devtools middleware and always cleanup with unsubscribe</li>
           <li>Use <code>$reset()</code> on logout or to restore initial state</li>
           <li>Combine with <code>computed()</code> inside stores for derived state</li>
         </ul>

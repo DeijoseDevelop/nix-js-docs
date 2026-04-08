@@ -54,16 +54,21 @@ export function APIPage(): NixTemplate {
         <tr><td><code>RouterView(depth?)</code></td><td>Renders matched route at given nesting depth</td></tr>
         <tr><td><code>Link(path, label)</code></td><td>Reactive anchor with automatic active styling</td></tr>
         <tr><td><code>router.navigate(path, q?)</code></td><td>Navigate via history.pushState</td></tr>
+        <tr><td><code>router.resolve(path)</code></td><td>Inspect match result ({ matched, params, route }) including route meta</td></tr>
+        <tr><td><code>createRouter(routes, { mode: "hash" })</code></td><td>Enable hash-based routing strategy</td></tr>
+        <tr><td><code>createRouter(routes, { scrollBehavior })</code></td><td>Customize scroll restoration using saved back/forward positions</td></tr>
         <tr><td><code>router.beforeEach(guard)</code></td><td>Register global guard; returns removal fn</td></tr>
+        <tr><td><code>RouteRecord.meta?</code></td><td>Optional metadata object available on matched route</td></tr>
       </table></div>
 
       <h3>Stores</h3>
       <div class="tbl"><table>
         <tr><th>Export</th><th>Description</th></tr>
-        <tr><td><code>createStore(state, actions?)</code></td><td>Create a reactive global store</td></tr>
+        <tr><td><code>createStore(state, actions?, getters?)</code></td><td>Create a reactive global store with optional actions and computed getters</td></tr>
         <tr><td><code>store.$state</code></td><td>Reactive read-only snapshot of all values</td></tr>
         <tr><td><code>store.$reset()</code></td><td>Restore all signals to initial values</td></tr>
         <tr><td><code>store.$patch(partial)</code></td><td>Batch-update multiple signals at once</td></tr>
+        <tr><td><code>store.$subscribe((key, newVal, oldVal) =&gt; ...)</code></td><td>Subscribe to all state key changes; returns unsubscribe</td></tr>
       </table></div>
 
       <h3>Async</h3>
@@ -78,9 +83,10 @@ export function APIPage(): NixTemplate {
       <h3>Forms</h3>
       <div class="tbl"><table>
         <tr><th>Export</th><th>Description</th></tr>
-        <tr><td><code>createForm(state, opts?)</code></td><td>Manage a full form with validation and submission</td></tr>
+        <tr><td><code>createForm(state, opts?)</code></td><td>Manage a full form with validation and submission (supports nested dot-path fields)</td></tr>
         <tr><td><code>useField(initial, validators?, mode?)</code></td><td>Manage a single reactive field</td></tr>
         <tr><td><code>useFieldArray(items, validators?)</code></td><td>Dynamic list of field groups</td></tr>
+        <tr><td><code>Validator&lt;T, AllValues&gt;</code></td><td>Validator signature: <code>(value, allValues?) =&gt; string | null | undefined</code></td></tr>
         <tr><td><code>required() / minLength() / email() / ...</code></td><td>Built-in validators</td></tr>
       </table></div>
 

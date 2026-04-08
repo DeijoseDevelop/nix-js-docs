@@ -397,7 +397,7 @@ function DashboardPage(): NixTemplate {
       .setSlot('header', html\`<h1>Dashboard</h1>\`)
       .setSlot('nav',    html\`<nav><a href="/">Home</a></nav>\`)
       .setChildren(      html\`<p>Main dashboard content here</p>\`)
-      .setSlot('footer', html\`<small>Nix.js v1.8.1</small>\`)
+      .setSlot('footer', html\`<small>Nix.js v1.9.0</small>\`)
     }
   \`;
 }`.trim();
@@ -458,6 +458,41 @@ function CartButton(): NixTemplate {
     </button>
   \`;
 }`.trim();
+
+S.store_getters = `
+const counterStore = createStore(
+  { count: 0, items: [] as string[] },
+  (s) => ({
+    increment: () => s.count.value++,
+    addItem: (name: string) => s.items.value = [...s.items.value, name],
+  }),
+  (s) => ({
+    double: computed(() => s.count.value * 2),
+    total: computed(() => s.items.value.length),
+  }),
+);
+
+counterStore.increment();
+counterStore.double.value; // 2
+counterStore.total.value;  // items length
+`.trim();
+
+S.store_subscribe = `
+const store = createStore({ count: 0, theme: 'dark' });
+
+const unsubscribe = store.$subscribe((key, newVal, oldVal) => {
+  console.log('[store]', key, oldVal, '->', newVal);
+
+  // Persist full snapshot (middleware pattern)
+  localStorage.setItem('app-store', JSON.stringify(store.$state));
+});
+
+store.count.value++;
+store.$patch({ theme: 'light' });
+
+// Later (cleanup)
+unsubscribe();
+`.trim();
 
 S.router_setup = `
 import { createRouter, RouterView, Link, useRouter } from '@deijose/nix-js';
@@ -541,6 +576,56 @@ router.afterEach((to, from) => {
   window.scrollTo(0, 0);
 });`.trim();
 
+S.router_meta = `
+const router = createRouter([
+  { path: '/', component: () => HomePage() },
+  { path: '/admin', component: () => AdminPage(), meta: { auth: true } },
+  { path: '/login', component: () => LoginPage() },
+]);
+
+const stop = router.beforeEach((to) => {
+  const m = router.resolve(to);
+  if (m.route?.meta?.auth) return '/login';
+});
+
+// resolve() returns:
+// {
+//   matched: boolean,
+//   params: Record<string, string>,
+//   route: RouteRecord | undefined // includes route.meta when matched
+// }
+`.trim();
+
+S.router_scroll = `
+const router = createRouter(routes, {
+  scrollBehavior(to, from, saved) {
+    // back/forward: restore previous position
+    if (saved) return saved;
+
+    // regular navigate/replace: start at top
+    return { left: 0, top: 0 };
+  },
+});
+
+// Router stores positions in history.state automatically.
+// Default behavior (without callback):
+// - navigate/replace => scroll to top
+// - back/forward => restore saved position when available
+`.trim();
+
+S.router_mode = `
+const router = createRouter(routes, {
+  mode: 'hash', // default is 'history'
+});
+
+// URL examples in hash mode:
+// #/
+// #/users/42
+// #/search?q=nix
+
+// Router listens to "hashchange" in this mode.
+`.trim();
+
 S.router_nested = `
 createRouter([
   {
@@ -610,6 +695,93 @@ function RegisterForm(): NixTemplate {
       </button>
 
       <p>Attempts: \${() => form.submitCount.value}</p>
+    </form>
+  \`;
+}`.trim();
+
+S.forms_nested = `
+import { createForm, required } from '@deijose/nix-js';
+
+function ShippingForm(): NixTemplate {
+  const form = createForm(
+    {
+      fullName: '',
+      address: {
+        city: '',
+        zip: '',
+      },
+    },
+    {
+      validators: {
+        fullName: [required()],
+        'address.city': [required('City is required')],
+      },
+    }
+  );
+
+  return html\`
+    <form @submit=\${form.handleSubmit(async (values) => {
+      await api.saveAddress(values);
+    })}>
+      <input
+        placeholder="City"
+        value=\${() => String(form.fields['address.city'].value.value ?? '')}
+        @input=\${form.fields['address.city'].onInput}
+        @blur=\${form.fields['address.city'].onBlur}
+      />
+
+      \${() => form.fields['address.city'].error.value
+        ? html\`<span class="err">\${form.fields['address.city'].error.value}</span>\`
+        : null}
+
+      <button type="button" @click=\${() => {
+        form.setErrors({ 'address.city': 'City is required' });
+      }}>
+        Inject server error
+      </button>
+
+      <pre>\${() => JSON.stringify(form.values.value, null, 2)}</pre>
+    </form>
+  \`;
+}`.trim();
+
+S.forms_cross_field = `
+import { createForm, required } from '@deijose/nix-js';
+
+function PasswordForm(): NixTemplate {
+  const form = createForm(
+    { pass: '', confirm: '' },
+    {
+      validateOn: 'input',
+      validators: {
+        pass: [required()],
+        confirm: [
+          required(),
+          (value, values) => value !== values?.pass ? 'Must match' : null,
+        ],
+      },
+    }
+  );
+
+  return html\`
+    <form>
+      <input type="password"
+        placeholder="Password"
+        value=\${() => String(form.fields.pass.value.value ?? '')}
+        @input=\${form.fields.pass.onInput}
+        @blur=\${form.fields.pass.onBlur}
+      />
+
+      <input type="password"
+        placeholder="Confirm password"
+        value=\${() => String(form.fields.confirm.value.value ?? '')}
+        @input=\${form.fields.confirm.onInput}
+        @blur=\${form.fields.confirm.onBlur}
+      />
+
+      \${() => form.fields.confirm.error.value
+        ? html\`<span class="err">\${form.fields.confirm.error.value}</span>\`
+        : null}
     </form>
   \`;
 }`.trim();
@@ -1013,6 +1185,8 @@ handle.unmount();`.trim();
 
 S.form_field = S.forms_custom;
 S.form_create = S.forms_create;
+S.form_nested = S.forms_nested;
+S.form_cross_field = S.forms_cross_field;
 S.form_zod = S.forms_zod;
 S.form_array = S.forms_array;
 

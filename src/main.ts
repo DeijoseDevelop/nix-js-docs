@@ -96,7 +96,7 @@ function App(): NixTemplate {
             <img src="/nix-js-logo.png" alt="Nix.js Logo" class="sb-logo-img">
             <div class="sb-logo">Nix<em>.</em>js</div>
           </a>
-          <div class="sb-ver">v1.8.1 — documentation</div>
+          <div class="sb-ver">v1.9.0 — documentation</div>
           <div class="sb-search">
             <span class="sb-search-ic">⌕</span>
             <input type="search" placeholder="Search… (⌘K)" autocomplete="off"
@@ -140,7 +140,7 @@ function App(): NixTemplate {
             }}
           </div>
           <div class="tb-right">
-            <span class="tb-badge">v1.8.1</span>
+            <span class="tb-badge">v1.9.0</span>
             <a class="tb-badge" href="https://github.com/DeijoseDevelop/nix-js" target="_blank" style="text-decoration:none;cursor:pointer">GitHub ↗</a>
           </div>
         </div>

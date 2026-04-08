@@ -26,6 +26,18 @@ export function RouterPage(): NixTemplate {
 
       ${new CodeBlock(S.router_guards)}
 
+      <h3>Route Meta &amp; resolve()</h3>
+      <p>Attach arbitrary metadata to routes with <code>meta</code>, then read it from the matched route via <code>router.resolve(to)</code> inside guards.</p>
+      ${new CodeBlock(S.router_meta)}
+
+      <h3>Scroll Restoration</h3>
+      <p>The router saves scroll positions in <code>history.state</code>, restores them on back/forward, and lets you customize behavior via <code>scrollBehavior</code>.</p>
+      ${new CodeBlock(S.router_scroll)}
+
+      <h3>Hash Mode</h3>
+      <p>Use <code>mode: "hash"</code> when your hosting environment cannot rewrite all routes to <code>index.html</code>. In this mode, the router reads from <code>location.hash</code> and listens to <code>hashchange</code>.</p>
+      ${new CodeBlock(S.router_mode)}
+
       <div class="tbl">
         <table>
           <tr><th>Property / Method</th><th>Type</th><th>Description</th></tr>
@@ -36,6 +48,9 @@ export function RouterPage(): NixTemplate {
           <tr><td><code>router.replace(path, query?)</code></td><td>void</td><td>Navigate via replaceState</td></tr>
           <tr><td><code>router.back() / forward() / go(n)</code></td><td>void</td><td>History navigation</td></tr>
           <tr><td><code>router.isActive(path, exact?)</code></td><td>boolean</td><td>Check if a path is active</td></tr>
+          <tr><td><code>router.resolve(path)</code></td><td>{ matched, params, route }</td><td>Inspect route match and access <code>route.meta</code></td></tr>
+          <tr><td><code>options.mode</code></td><td><code>"history" | "hash"</code></td><td>URL strategy. <code>history</code> by default</td></tr>
+          <tr><td><code>options.scrollBehavior(to, from, saved)</code></td><td>ScrollPosition | false | void</td><td>Customize navigation scroll behavior</td></tr>
           <tr><td><code>router.beforeEach(guard)</code></td><td>() =&gt; void</td><td>Global guard; returns removal fn</td></tr>
           <tr><td><code>router.afterEach(hook)</code></td><td>() =&gt; void</td><td>Post-navigation hook</td></tr>
         </table>
