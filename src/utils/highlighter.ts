@@ -11,16 +11,16 @@ const KW = new Set([
 const FN = new Set([
   'signal', 'computed', 'effect', 'batch', 'watch', 'untrack', 'nextTick',
   'html', 'repeat', 'ref', 'mount', 'createStore', 'createRouter', 'createForm',
-  'useField', 'useFieldArray', 'createQuery', 'invalidateQueries',
+  'nixField', 'nixFieldArray', 'createQuery', 'invalidateQueries',
   'clearQueryCache', 'suspend', 'lazy', 'provide', 'inject',
   'createInjectionKey', 'portal', 'transition', 'createErrorBoundary',
-  'showWhen', 'RouterView', 'Link', 'useRouter', 'NixComponent', 'required',
+  'showWhen', 'RouterView', 'Link', 'nixRouter', 'NixComponent', 'required',
   'minLength', 'maxLength', 'email', 'pattern', 'min', 'max',
   'setInterval', 'clearInterval', 'setTimeout', 'clearTimeout', 'fetch',
   'console', 'document', 'Object', 'Array', 'JSON', 'Math', 'Promise', 'Error',
   'render', 'onInit', 'onMount', 'onUnmount', 'onError', 'setChildren',
   'setSlot', 'createPortalOutlet', 'portalOutlet', 'provideOutlet',
-  'injectOutlet', 'safeParse', 'flatten', 'navigate', 'replace', 'useRouter',
+  'injectOutlet', 'safeParse', 'flatten', 'navigate', 'replace', 'nixRouter',
 ]);
 
 const TOKS: [RegExp, string | null][] = [
@@ -53,9 +53,9 @@ export function highlight(raw: string): string {
       hit = true;
 
       if (cls === null && /^[A-Za-z_$]/.test(tok)) {
-        if (KW.has(tok))      out += `<span class="k">${esc(tok)}</span>`;
+        if (KW.has(tok)) out += `<span class="k">${esc(tok)}</span>`;
         else if (FN.has(tok)) out += `<span class="f">${esc(tok)}</span>`;
-        else                  out += esc(tok);
+        else out += esc(tok);
       } else if (cls) {
         out += `<span class="${cls}">${esc(tok)}</span>`;
       } else {
