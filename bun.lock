@@ -5,7 +5,7 @@
     "": {
       "name": "nix-js-docs",
       "dependencies": {
-        "@deijose/nix-js": "^1.9.0",
+        "@deijose/nix-js": "^2.0.2",
       },
       "devDependencies": {
         "typescript": "~5.9.3",
@@ -14,7 +14,7 @@
     },
   },
   "packages": {
-    "@deijose/nix-js": ["@deijose/nix-js@1.9.0", "", {}, "sha512-0UOdNVXH+nL4YXt/ubhm/mlRC06atDDfaUv4Syi0a5bk/cRYT40JTb7oOYFx8wKfUaCQuk653T64O+yMakCR3g=="],
+    "@deijose/nix-js": ["@deijose/nix-js@2.0.2", "", {}, "sha512-fgrcnFfjqM77apY2FGxbZh37v5QGlNkdIYTcUhAQ15/tgLUA6hbRTBWys9sgZ3+tDx87/08QIrGPNjl8KQVxyA=="],
 
     "@emnapi/core": ["@emnapi/core@1.9.1", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.0", "tslib": "^2.4.0" } }, "sha512-mukuNALVsoix/w1BJwFzwXBN/dHeejQtuVzcDsfOEsdpCumXb/E9j8w11h5S54tT1xhifGfbbSm/ICrObRb3KA=="],
 

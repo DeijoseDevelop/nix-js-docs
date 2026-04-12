@@ -495,7 +495,7 @@ unsubscribe();
 `.trim();
 
 S.router_setup = `
-import { createRouter, RouterView, Link, useRouter } from '@deijose/nix-js';
+import { createRouter, RouterView, Link, nixRouter } from '@deijose/nix-js';
 
 const router = createRouter([
   { name: 'home',        path: '/',          component: () => HomePage()       },
@@ -545,7 +545,7 @@ router.navigate('/users/42');
 
 S.router_params = `
 function UserDetailPage(): NixTemplate {
-  const router = useRouter();
+  const router = nixRouter();
 
   const userId = computed(() => router.params.value.id);
   const tab    = computed(() => router.query.value.tab ?? 'overview');
@@ -813,8 +813,8 @@ function PasswordForm(): NixTemplate {
   const hasUpper  = (v: string) => /[A-Z]/.test(v) ? null : 'Must include an uppercase letter';
   const hasNumber = (v: string) => /\d/.test(v)    ? null : 'Must include a number';
 
-  const password = useField('', [required(), minLength(8), noSpaces, hasUpper, hasNumber], 'input');
-  const confirm  = useField('', [
+  const password = nixField('', [required(), minLength(8), noSpaces, hasUpper, hasNumber], 'input');
+  const confirm  = nixField('', [
     required(),
     (v: string) => v === password.value.peek() ? null : 'Passwords must match',
   ], 'blur');
@@ -880,7 +880,7 @@ function RegisterForm(): NixTemplate {
 
 S.forms_array = `
 function GuestListForm(): NixTemplate {
-  const guestList = useFieldArray(
+  const guestList = nixFieldArray(
     [{ name: '', email: '' }],
     { name: [required(), minLength(2)], email: [required(), email()] }
   );
