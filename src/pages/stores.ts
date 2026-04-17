@@ -241,7 +241,7 @@ export function StoresPage(): NixTemplate {
                         Use <code>$patch()</code> for ad-hoc multi-key updates from outside the store
                     </li>
                     <li>
-                        Use <code>persistPlugin</code> for localStorage sync — it handles SSR, private mode, and schema migrations
+                        Use <code>persistPlugin</code> for state synchronization with any storage (localStorage, IndexedDB, etc.). It now supports <strong>asynchronous adapters</strong> and <strong>write debouncing</strong> for performance.
                     </li>
                     <li>
                         Use <code>guardPlugin</code> if you need validation or transformation before any mutation lands

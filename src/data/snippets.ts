@@ -1384,7 +1384,14 @@ const userStore = createStore(
   { name: '', email: '', plan: 'free' },
   {
     name: 'user',
-    plugins: [analyticsPlugin('user_state_change')],
+    plugins: [
+      analyticsPlugin('user_state_change'),
+      // Example of native v2.2.2 persistence with debounce and custom adapter
+      persistPlugin('nix_user', {
+        debounce: 300,
+        storage: sessionStorage, // or any item with getItem/setItem
+      })
+    ],
   }
 );
 `.trim();
