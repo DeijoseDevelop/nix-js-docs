@@ -75,7 +75,7 @@ export class ComparisonPage extends NixComponent {
           <tr><td><code>useEffect(fn, deps)</code></td><td><code>effect(fn)</code> — dependencies are auto-tracked</td></tr>
           <tr><td><code>useContext(Key)</code></td><td><code>inject(Key)</code></td></tr>
           <tr><td><code>React.memo()</code></td><td>Not needed — signals are granular by default</td></tr>
-          <tr><td><code>&lt;Suspense&gt;</code></td><td><code>suspend() / createQuery()</code></td></tr>
+          <tr><td><code>&lt;Suspense&gt;</code></td><td><code>suspend() / nix-query</code></td></tr>
           <tr><td><code>React.lazy()</code></td><td><code>lazy()</code></td></tr>
           <tr><td><code>createPortal()</code></td><td><code>portal()</code></td></tr>
         </table>

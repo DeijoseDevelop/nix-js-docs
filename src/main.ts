@@ -1,4 +1,4 @@
-import { signal, computed, html, mount } from '@deijose/nix-js';
+import { signal, computed, html, mount, repeat } from '@deijose/nix-js';
 import type { NixTemplate } from '@deijose/nix-js';
 import { PAGES, type PageMeta } from './data/pages';
 import './style.css';
@@ -147,18 +147,21 @@ function App(): NixTemplate {
 
         <!-- Page content -->
         <div id="pages">
-          ${() => {
-            const id = activePage.value;
-            const builder = PAGE_MAP[id];
-            if (!builder) return html`<section class="page on"><p>Page not found</p></section>`;
-            
-            // If it's a class component (has render method in prototype)
-            if (typeof builder === 'function' && builder.prototype?.render) {
-              return html`<section class="page on" id=${id}>${new (builder as any)()}</section>`;
+          ${() => repeat(
+            [activePage.value],
+            id => id,
+            id => {
+              const builder = PAGE_MAP[id];
+              if (!builder) return html`<section class="page on"><p>Page not found</p></section>`;
+
+              // If it's a class component (has render method in prototype)
+              if (typeof builder === 'function' && builder.prototype?.render) {
+                return html`<section class="page on" id=${id}>${new (builder as any)()}</section>`;
+              }
+              // Otherwise it's a NixTemplate function component
+              return html`<section class="page on" id=${id}>${(builder as any)()}</section>`;
             }
-            // Otherwise it's a NixTemplate function component
-            return html`<section class="page on" id=${id}>${(builder as any)()}</section>`;
-          }}
+          )}
         </div>
 
       </div><!-- /main -->

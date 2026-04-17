@@ -201,24 +201,70 @@ export function APIPage(): NixTemplate {
             <th>Description</th>
           </tr>
           <tr>
-            <td><code>createStore(state, actions?, getters?)</code></td>
-            <td>Create a reactive global store with optional actions and computed getters</td>
+            <td><code>createStore(state, options?)</code></td>
+            <td>Create a reactive global store. Options: <code>name</code>, <code>actions</code>, <code>getters</code>, <code>plugins</code></td>
           </tr>
           <tr>
             <td><code>store.$state</code></td>
             <td>Reactive read-only snapshot of all values</td>
           </tr>
           <tr>
+            <td><code>store.$stateSignal</code></td>
+            <td>Underlying <code>ReadonlySignal&lt;T&gt;</code> — for plugins and derived graphs</td>
+          </tr>
+          <tr>
+            <td><code>store.$id</code></td>
+            <td>Store name as set in <code>options.name</code></td>
+          </tr>
+          <tr>
             <td><code>store.$reset()</code></td>
-            <td>Restore all signals to initial values</td>
+            <td>Restore all signals to initial values (batched)</td>
           </tr>
           <tr>
             <td><code>store.$patch(partial)</code></td>
             <td>Batch-update multiple signals at once</td>
           </tr>
           <tr>
-            <td><code>store.$subscribe((key, newVal, oldVal) =&gt; ...)</code></td>
-            <td>Subscribe to all state key changes; returns unsubscribe</td>
+            <td><code>store.$watch(cb, opts?)</code></td>
+            <td>Watch full state snapshot; fires once per flush. Returns stop function</td>
+          </tr>
+          <tr>
+            <td><code>store.$dispose()</code></td>
+            <td>Dispose the store, computed graph, and all plugin cleanups</td>
+          </tr>
+        </table>
+      </div>
+
+      <h3>Store Plugins</h3>
+      <div class="tbl">
+        <table>
+          <tr>
+            <th>Export</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><code>persistPlugin(key, opts?)</code></td>
+            <td>Hydrate from localStorage on init and persist on every change. Supports <code>exclude</code>, <code>serialize</code>, <code>deserialize</code></td>
+          </tr>
+          <tr>
+            <td><code>loggerPlugin(opts?)</code></td>
+            <td>Log state diffs to console with prev/next/diff. Supports <code>collapsed</code>, <code>filter</code></td>
+          </tr>
+          <tr>
+            <td><code>guardPlugin(guards)</code></td>
+            <td>Intercept and validate mutations before they land. Guards can transform the payload or throw to abort</td>
+          </tr>
+          <tr>
+            <td><code>bridgePlugin(sourceStore, sync)</code></td>
+            <td>Reactively sync a source store into the current store via a <code>sync(state, target)</code> callback</td>
+          </tr>
+          <tr>
+            <td><code>NixPlugin&lt;T, A, G&gt;</code></td>
+            <td>Plugin type: <code>(store) =&gt; (() =&gt; void) | void</code></td>
+          </tr>
+          <tr>
+            <td><code>ReadonlySignal&lt;T&gt;</code></td>
+            <td>Signal subclass used for getters and <code>$stateSignal</code> — readable, throws on write or dispose</td>
           </tr>
         </table>
       </div>
@@ -232,15 +278,7 @@ export function APIPage(): NixTemplate {
           </tr>
           <tr>
             <td><code>suspend(asyncFn, renderFn, opts?)</code></td>
-            <td>Async data with suspense, invalidate, and cache</td>
-          </tr>
-          <tr>
-            <td><code>createQuery(key, asyncFn, renderFn, opts?)</code></td>
-            <td>Key-based query with global shared cache</td>
-          </tr>
-          <tr>
-            <td><code>invalidateQueries(key)</code></td>
-            <td>Clear cache + force active instances to refetch</td>
+            <td>Async data with suspense, invalidate, and optional cache</td>
           </tr>
           <tr>
             <td><code>lazy(importFn, fallback?)</code></td>
@@ -248,6 +286,8 @@ export function APIPage(): NixTemplate {
           </tr>
         </table>
       </div>
+
+      <div class="cl cl-i"><span class="cl-ic">📦</span><p><code>createQuery()</code> and <code>invalidateQueries()</code> have moved to <a href="https://www.npmjs.com/package/@deijose/nix-query" target="_blank" rel="noopener">@deijose/nix-query</a> — install separately for shared multi-component caching.</p></div>
     
       <h3>Forms</h3>
       <div class="tbl">

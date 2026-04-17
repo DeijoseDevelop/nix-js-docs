@@ -406,7 +406,10 @@ S.store_basic = `
 import { createStore } from '@deijose/nix-js';
 
 // Every key becomes a Signal automatically
-const counterStore = createStore({ count: 0, step: 1 });
+const counterStore = createStore(
+  { count: 0, step: 1 },
+  { name: 'counter' }  // optional — used in error messages
+);
 
 // Read / write signals directly
 counterStore.count.value;
@@ -420,7 +423,15 @@ counterStore.$state; // { count: 1, step: 5 }
 counterStore.$patch({ count: 0, step: 1 });
 
 // $reset — restore ALL signals to initial values
-counterStore.$reset();`.trim();
+counterStore.$reset();
+
+// $watch — reactive subscription (same API as watch())
+const stop = counterStore.$watch((next, prev) => {
+  console.log('state changed', prev, '->', next);
+});
+
+// $dispose — cleanup store and all plugins
+counterStore.$dispose();`.trim();
 
 S.store_actions = `
 interface CartItem { id: number; name: string; price: number; qty: number; }
@@ -431,23 +442,26 @@ const cartStore = createStore(
     coupon:   '',
     discount: 0,
   },
-  (s) => ({
-    addItem(item: CartItem) {
-      s.items.update(arr => {
-        const existing = arr.find(i => i.id === item.id);
-        if (existing) return arr.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
-        return [...arr, { ...item, qty: 1 }];
-      });
-    },
-    removeItem(id: number) {
-      s.items.update(arr => arr.filter(i => i.id !== id));
-    },
-    applyCoupon(code: string) {
-      s.coupon.value   = code;
-      s.discount.value = code === 'NIX20' ? 20 : 0;
-    },
-    clearCart() { cartStore.$reset(); },
-  })
+  {
+    name: 'cart',
+    actions: (s) => ({
+      addItem(item: CartItem) {
+        s.items.update(arr => {
+          const existing = arr.find(i => i.id === item.id);
+          if (existing) return arr.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
+          return [...arr, { ...item, qty: 1 }];
+        });
+      },
+      removeItem(id: number) {
+        s.items.update(arr => arr.filter(i => i.id !== id));
+      },
+      applyCoupon(code: string) {
+        s.coupon.value   = code;
+        s.discount.value = code === 'NIX20' ? 20 : 0;
+      },
+      clearCart() { cartStore.$reset(); },
+    }),
+  }
 );
 
 function CartButton(): NixTemplate {
@@ -462,36 +476,111 @@ function CartButton(): NixTemplate {
 S.store_getters = `
 const counterStore = createStore(
   { count: 0, items: [] as string[] },
-  (s) => ({
-    increment: () => s.count.value++,
-    addItem: (name: string) => s.items.value = [...s.items.value, name],
-  }),
-  (s) => ({
-    double: computed(() => s.count.value * 2),
-    total: computed(() => s.items.value.length),
-  }),
+  {
+    actions: (s) => ({
+      increment: () => s.count.value++,
+      addItem: (name: string) => s.items.value = [...s.items.value, name],
+    }),
+    getters: (s) => ({
+      double: computed(() => s.count.value * 2),
+      total:  computed(() => s.items.value.length),
+    }),
+  }
 );
 
 counterStore.increment();
-counterStore.double.value; // 2
+counterStore.double.value; // 2  — ReadonlySignal, throws on write
 counterStore.total.value;  // items length
 `.trim();
 
-S.store_subscribe = `
+S.store_watch = `
 const store = createStore({ count: 0, theme: 'dark' });
 
-const unsubscribe = store.$subscribe((key, newVal, oldVal) => {
-  console.log('[store]', key, oldVal, '->', newVal);
+// $watch — same API as watch() from reactivity
+const stop = store.$watch((next, prev) => {
+  console.log('state changed', prev?.count, '->', next.count);
 
-  // Persist full snapshot (middleware pattern)
-  localStorage.setItem('app-store', JSON.stringify(store.$state));
+  // Persist full snapshot on every change
+  localStorage.setItem('app-store', JSON.stringify(next));
 });
 
 store.count.value++;
 store.$patch({ theme: 'light' });
 
 // Later (cleanup)
-unsubscribe();
+stop();
+`.trim();
+
+S.store_plugins = `
+import { persistPlugin, loggerPlugin, guardPlugin } from '@deijose/nix-js/store';
+
+interface RiderState {
+  nickname: string;
+  kmTotal:  number;
+  isOnline: boolean;
+}
+
+export const riderStore = createStore<RiderState>(
+  { nickname: 'Rider', kmTotal: 0, isOnline: false },
+  {
+    name: 'rider',
+    actions: (s) => ({
+      addKm:     (km: number)  => { s.kmTotal.value += km; },
+      setOnline: (v: boolean)  => { s.isOnline.value = v; },
+    }),
+    plugins: [
+      // Hydrates from localStorage on init, persists on every change
+      persistPlugin<RiderState>('ib:rider', { exclude: ['isOnline'] }),
+
+      // Logs diffs to console (dev only)
+      loggerPlugin<RiderState>({ collapsed: true }),
+
+      // Validates BEFORE mutations — can transform or throw
+      guardPlugin<RiderState>([
+        (next, current) => {
+          if ('kmTotal' in next && (next.kmTotal as number) < 0)
+            throw new Error('kmTotal cannot be negative.');
+          if ('nickname' in next) {
+            const n = next.nickname as string;
+            if (n.length < 3) throw new Error('Nickname too short.');
+            return { ...next, nickname: n.toUpperCase() }; // transform
+          }
+        },
+      ]),
+    ],
+  }
+);
+`.trim();
+
+S.store_bridge = `
+import { bridgePlugin } from '@deijose/nix-js/store';
+import { authStore }    from './auth.store';
+
+// When authStore changes → sync data into riderStore automatically
+export const riderStore = createStore<RiderState>(
+  { nickname: 'Rider', kmTotal: 0, isOnline: false },
+  {
+    name: 'rider',
+    plugins: [
+      bridgePlugin<RiderState, AuthState>(
+        authStore,
+        (auth, rider) => {
+          if (auth.isAuthenticated && auth.username) {
+            rider.$patch({ nickname: auth.username, isOnline: true });
+          }
+          if (!auth.isAuthenticated) {
+            rider.$patch({ nickname: 'Rider', isOnline: false });
+          }
+        }
+      ),
+    ],
+  }
+);
+
+// Usage — no manual wiring needed:
+authStore.login('u_123', 'DEIVER', 'token_xxx');
+// → riderStore.nickname.value === 'DEIVER'
+// → riderStore.isOnline.value === true
 `.trim();
 
 S.router_setup = `
@@ -947,46 +1036,7 @@ function ProductsPage(): NixTemplate {
   \`;
 }`.trim();
 
-S.query_fn = `
-import { createQuery, invalidateQueries } from '@deijose/nix-js';
 
-function OrdersTable(): NixTemplate {
-  return html\`
-    \${createQuery(
-      'orders',
-      () => fetch('/api/orders').then(r => r.json()),
-      (orders: Order[]) => html\`
-        <table>
-          \${orders.map(o => html\`
-            <tr>
-              <td>\${o.id}</td>
-              <td>\${o.customer}</td>
-              <td>$\${o.total}</td>
-            </tr>
-          \`)}
-        </table>
-      \`,
-      { fallback: html\`<p>Loading orders…</p>\`, staleTime: 60_000, refetchOnMount: 'stale' }
-    )}
-  \`;
-}
-
-function NewOrderButton(): NixTemplate {
-  const submitting = signal(false);
-
-  const createOrder = async () => {
-    submitting.value = true;
-    await api.createOrder({ /* ... */ });
-    invalidateQueries('orders');
-    submitting.value = false;
-  };
-
-  return html\`
-    <button @click=\${createOrder} disabled=\${() => submitting.value}>
-      \${() => submitting.value ? 'Creating…' : 'New Order'}
-    </button>
-  \`;
-}`.trim();
 
 S.di_fn = `
 import { createInjectionKey, provide, inject } from '@deijose/nix-js';
@@ -1230,7 +1280,7 @@ function App(): NixTemplate {
 // Link adds "active" class automatically when route matches`.trim();
 
 S.async_suspend = S.suspend_fn;
-S.async_query = S.query_fn;
+// createQuery moved to @deijose/nix-query — see Async & Lazy page
 
 S.async_invalidate = `
 function ProductList(): NixTemplate {
@@ -1305,3 +1355,57 @@ function TogglePanel(): NixTemplate {
     </div>
   \`;
 }`.trim();
+
+S.store_custom_plugin = `
+import type { NixPlugin } from '@deijose/nix-js';
+
+// A plugin is just a function: (store) => cleanup | void
+// Use watch(), computed(), or wrap methods — no special hooks.
+
+function analyticsPlugin<T extends Record<string, unknown>>(
+  eventName: string,
+): NixPlugin<T> {
+  return (store) => {
+    // watch() fires once per flush, regardless of how many signals changed
+    return store.$watch((next, prev) => {
+      if (!prev) return; // skip initial fire
+
+      const changed = Object.keys(next).filter(
+        k => !Object.is(next[k as keyof T], prev[k as keyof T])
+      );
+      analytics.track(eventName, { changed, state: next });
+    });
+    // returning the stop fn = cleanup on store.$dispose()
+  };
+}
+
+// Usage — drop it in plugins array, done
+const userStore = createStore(
+  { name: '', email: '', plan: 'free' },
+  {
+    name: 'user',
+    plugins: [analyticsPlugin('user_state_change')],
+  }
+);
+`.trim();
+
+S.store_plugin_intercept = `
+import type { NixPlugin } from '@deijose/nix-js';
+
+// Plugins can also wrap $patch / $reset to intercept mutations
+function readonlyPlugin<T extends Record<string, unknown>>(): NixPlugin<T> {
+  return (store) => {
+    const original = store.$patch.bind(store);
+
+    store.$patch = (partial) => {
+      console.warn('[store] $patch called with', partial);
+      original(partial);
+    };
+
+    // Cleanup: restore original method on dispose
+    return () => {
+      store.$patch = original;
+    };
+  };
+}
+`.trim();

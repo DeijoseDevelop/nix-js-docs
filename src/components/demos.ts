@@ -1,4 +1,4 @@
-import { signal, computed, html, repeat, watch, effect, batch, untrack } from '@deijose/nix-js';
+import { signal, computed, html, repeat, watch, effect, batch, untrack, createStore } from '@deijose/nix-js';
 import type { NixTemplate } from '@deijose/nix-js';
 
 export function DemoCounter(): NixTemplate {
@@ -396,17 +396,39 @@ export function DemoStore(): NixTemplate {
     { id: 1, name: 'Nix.js Tee', price: 25 }, { id: 2, name: 'Signal Mug', price: 15 },
     { id: 3, name: 'Effect Hoodie', price: 45 }, { id: 4, name: 'Batch Sticker', price: 5 },
   ];
-  const items = signal<CartItem[]>([]);
-  const discount = signal(0);
-  const subtotal = computed(() => items.value.reduce((s, i) => s + i.price * i.qty, 0));
-  const total = computed(() => subtotal.value * (1 - discount.value / 100));
-  const count = computed(() => items.value.reduce((s, i) => s + i.qty, 0));
-  const add = (p: Product) => items.update(a => { const ex = a.find(i => i.id === p.id); return ex ? a.map(i => i.id === p.id ? { ...i, qty: i.qty + 1 } : i) : [...a, { ...p, qty: 1 }]; });
-  const rem = (id: number) => items.update(a => a.filter(i => i.id !== id));
+
+  const store = createStore(
+    { items: [] as CartItem[], discount: 0 },
+    {
+      name: 'demo-cart',
+      actions: (s) => ({
+        add(p: Product) {
+          s.items.update(a => {
+            const ex = a.find(i => i.id === p.id);
+            return ex ? a.map(i => i.id === p.id ? { ...i, qty: i.qty + 1 } : i) : [...a, { ...p, qty: 1 }];
+          });
+        },
+        remove(id: number) { s.items.update(a => a.filter(i => i.id !== id)); },
+      }),
+      getters: (s) => ({
+        subtotal: computed(() => s.items.value.reduce((sum, i) => sum + i.price * i.qty, 0)),
+        count:    computed(() => s.items.value.reduce((sum, i) => sum + i.qty, 0)),
+        total:    computed(() => s.items.value.reduce((sum, i) => sum + i.price * i.qty, 0) * (1 - s.discount.value / 100)),
+      }),
+    }
+  );
+
+  // $watch — fires once per flush, shows new API
+  const log = signal('—');
+  store.$watch((next, prev) => {
+    const diff = next.items.length - (prev?.items.length ?? 0);
+    if (diff !== 0) log.value = `${diff > 0 ? '+' : ''}${diff} item${Math.abs(diff) !== 1 ? 's' : ''}`;
+    if (next.discount !== prev?.discount) log.value = `discount → ${next.discount}%`;
+  });
 
   return html`
     <div class="dbox" style="grid-column:1/-1">
-      <div class="dbox-lbl">createStore() — shopping cart with computed</div>
+      <div class="dbox-lbl">createStore() — actions · getters · $watch · $patch</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div>
           <div style="font-size:11px;color:var(--tx3);font-family:var(--mono);margin-bottom:7px">PRODUCTS</div>
@@ -415,33 +437,51 @@ export function DemoStore(): NixTemplate {
               <span style="font-size:13px;color:var(--tx2)">${p.name}</span>
               <div style="display:flex;align-items:center;gap:8px">
                 <span style="font-family:var(--mono);font-size:11px;color:var(--tx3)">$${p.price}</span>
-                <button class="btn btn-p btn-sm" style="padding:3px 10px" @click=${() => add(p)}>+</button>
+                <button class="btn btn-p btn-sm" style="padding:3px 10px" @click=${() => store.add(p)}>+</button>
               </div>
             </div>
           `)}
+          <div style="margin-top:10px;display:flex;gap:6px;align-items:center">
+            <span style="font-size:11px;color:var(--tx3);font-family:var(--mono)">$patch discount:</span>
+            ${[0, 10, 20].map(d => html`
+              <button class=${() => `btn btn-sm ${store.discount.value === d ? 'btn-p' : 'btn-o'}`}
+                @click=${() => store.$patch({ discount: d })}>${d}%</button>
+            `)}
+          </div>
         </div>
         <div>
           <div style="font-size:11px;color:var(--tx3);font-family:var(--mono);margin-bottom:7px">
-            CART <span style="color:var(--ac2)">${() => count.value} items</span>
+            CART <span style="color:var(--ac2)">${() => store.count.value} items</span>
           </div>
-          ${() => items.value.length === 0
+          ${() => store.items.value.length === 0
             ? html`<div style="color:var(--tx3);font-size:13px">Empty — add products</div>`
             : html`
-                ${() => repeat(items.value, i => i.id, i => html`
+                ${() => repeat(store.items.value, i => i.id, i => html`
                   <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px">
                     <span style="color:var(--tx2)">${i.name}×${i.qty}</span>
                     <div style="display:flex;gap:6px;align-items:center">
                       <span style="color:var(--ac2);font-family:var(--mono)">$${(i.price * i.qty).toFixed(2)}</span>
-                      <span @click=${() => rem(i.id)} style="cursor:pointer;color:var(--red)">×</span>
+                      <span @click=${() => store.remove(i.id)} style="cursor:pointer;color:var(--red)">×</span>
                     </div>
                   </div>
                 `)}
+                ${() => store.discount.value > 0 ? html`
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);font-family:var(--mono);padding-top:5px">
+                    <span>subtotal</span><span>$${() => store.subtotal.value.toFixed(2)}</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ac2);font-family:var(--mono)">
+                    <span>discount</span><span>-${() => store.discount.value}%</span>
+                  </div>
+                ` : null}
                 <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:14px;font-weight:700;border-top:1px solid var(--bd);padding-top:7px;margin-top:7px">
-                  <span>Total</span><span style="color:var(--ac2)">$${() => total.value.toFixed(2)}</span>
+                  <span>Total</span><span style="color:var(--ac2)">$${() => store.total.value.toFixed(2)}</span>
                 </div>
-                <button class="btn btn-o btn-sm" style="width:100%;margin-top:7px" @click=${() => { items.value = []; discount.value = 0; }}>Clear</button>
+                <button class="btn btn-o btn-sm" style="width:100%;margin-top:7px" @click=${() => store.$reset()}>Clear</button>
               `
           }
+          <div style="margin-top:10px;font-size:11px;color:var(--tx3);font-family:var(--mono)">
+            $watch → <span style="color:var(--ac2)">${() => log.value}</span>
+          </div>
         </div>
       </div>
     </div>

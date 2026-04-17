@@ -78,14 +78,13 @@ export function InstallPage(): NixTemplate {
     
       // Advanced
       nixField, nixFieldArray, suspend, lazy,
-      createQuery, invalidateQueries,
       provide, inject, createInjectionKey,
       portal, transition, createErrorBoundary,
       RouterView, Link, nixRouter,
       } from "@deijose/nix-js";`)}
     
       <div class="cl cl-t"><span class="cl-ic">💡</span>
-        <p>Nix.js ships a single entry point. All exports are tree-shakeable — your bundler only includes what you import.
+        <p>Nix.js ships a single entry point. All exports are tree-shakeable — your bundler only includes what you import. Query caching (<code>createQuery</code>) lives in the separate <code>@deijose/nix-query</code> package.
         </p>
       </div>
     </div>
