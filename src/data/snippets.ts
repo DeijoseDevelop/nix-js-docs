@@ -416,8 +416,11 @@ counterStore.count.value;
 counterStore.count.value++;
 counterStore.step.value = 5;
 
-// $state — reactive snapshot of all values
+// $state — reactive snapshot (creates subscription when read inside effect/computed)
 counterStore.$state; // { count: 1, step: 5 }
+
+// $snapshot() — passive snapshot, no reactive subscription (use in plugins, loggers)
+counterStore.$snapshot(); // { count: 1, step: 5 }
 
 // $patch — batch-update multiple keys at once
 counterStore.$patch({ count: 0, step: 1 });
@@ -446,14 +449,15 @@ const cartStore = createStore(
     name: 'cart',
     actions: (s) => ({
       addItem(item: CartItem) {
-        s.items.update(arr => {
-          const existing = arr.find(i => i.id === item.id);
-          if (existing) return arr.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
-          return [...arr, { ...item, qty: 1 }];
-        });
+        const existing = s.items.value.find(i => i.id === item.id);
+        if (existing) {
+          s.items.value = s.items.value.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
+        } else {
+          s.items.value = [...s.items.value, { ...item, qty: 1 }];
+        }
       },
       removeItem(id: number) {
-        s.items.update(arr => arr.filter(i => i.id !== id));
+        s.items.value = s.items.value.filter(i => i.id !== id);
       },
       applyCoupon(code: string) {
         s.coupon.value   = code;

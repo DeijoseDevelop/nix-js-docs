@@ -103,11 +103,11 @@ export function DemoEffect(): NixTemplate {
         </div>
         <div class="log-box" style="flex:1;min-height:100px">
           ${() => log.value.length === 0
-            ? html`<span style="color:var(--tx3)">Press Start…</span>`
-            : repeat(log.value, (_, i) => i, e => html`
+      ? html`<span style="color:var(--tx3)">Press Start…</span>`
+      : repeat(log.value, (_, i) => i, e => html`
                 <div class="log-row"><span style=${`color:${e.c}`}>${e.t}</span></div>
               `)
-          }
+    }
         </div>
       </div>
     </div>
@@ -159,8 +159,8 @@ export function DemoWatch(): NixTemplate {
       </div>
       <div class="log-box">
         ${() => logs.value.length === 0
-          ? html`<span style="color:var(--tx3)">No changes yet…</span>`
-          : repeat(logs.value, (_, i) => i, e => html`
+      ? html`<span style="color:var(--tx3)">No changes yet…</span>`
+      : repeat(logs.value, (_, i) => i, e => html`
               <div class="log-row">
                 <span style="color:var(--tx3)">${e.t}</span>　
                 <span style="color:var(--tx2)">${e.ov ?? '?'}</span>
@@ -168,7 +168,7 @@ export function DemoWatch(): NixTemplate {
                 <span class="sig-v">${e.nv}</span>
               </div>
             `)
-        }
+    }
       </div>
     </div>
   `;
@@ -234,9 +234,9 @@ export function DemoTodo(): NixTemplate {
         <div class="prog"><div class="prog-f" style=${() => `width:${todos.value.length ? (done.value / todos.value.length * 100) : 0}%`}></div></div>
       </div>
       ${() => repeat(todos.value, t => t.id, (tInitial) => {
-        const t = computed(() => todos.value.find(item => item.id === tInitial.id) || tInitial);
+    const t = computed(() => todos.value.find(item => item.id === tInitial.id) || tInitial);
 
-        return html`
+    return html`
           <div class="todo-row">
             <div 
               class=${() => 'tck' + (t.value.done ? ' on' : '')} 
@@ -252,7 +252,7 @@ export function DemoTodo(): NixTemplate {
             <span class="tdel" @click=${() => remove(tInitial.id)}>×</span>
           </div>
         `;
-      })}
+  })}
     </div>
   `;
 }
@@ -306,17 +306,17 @@ export function DemoForm(): NixTemplate {
                   style=${() => `border-color:${touched[key].value && errors[key].value ? 'var(--red)' : ''}`}
                   placeholder=${`${key}…`}/>
                 ${() => touched[key].value
-                  ? errors[key].value
-                    ? html`<div style="font-size:11px;color:var(--red);margin-top:3px;font-family:var(--mono)">✕ ${errors[key].value}</div>`
-                    : html`<div style="font-size:11px;color:var(--green);margin-top:3px;font-family:var(--mono)">✓ Looks good</div>`
-                  : null
-                }
+      ? errors[key].value
+        ? html`<div style="font-size:11px;color:var(--red);margin-top:3px;font-family:var(--mono)">✕ ${errors[key].value}</div>`
+        : html`<div style="font-size:11px;color:var(--green);margin-top:3px;font-family:var(--mono)">✓ Looks good</div>`
+      : null
+    }
               </div>
             `)}
             ${() => fields.password.value ? html`
               <div style="margin-bottom:12px">
                 <div style="display:flex;gap:4px;margin-bottom:3px">
-                  ${[1,2,3,4].map(i => html`
+                  ${[1, 2, 3, 4].map(i => html`
                     <div style=${() => `height:4px;flex:1;border-radius:2px;background:${strength.value >= i ? strengthColors[strength.value] : 'var(--bd)'}`}></div>
                   `)}
                 </div>
@@ -349,7 +349,7 @@ export function DemoRouter(): NixTemplate {
   const routes: Route[] = [
     { path: '/', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">🏠 Home</h4><p style="color:var(--tx2);font-size:13px">Welcome! Use the nav links above.</p><div class="row"><button class="btn btn-p btn-sm" @click=${() => nav('/users/42')}>Go to User 42</button></div></div>` },
     { path: '/about', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">📄 About</h4><p style="color:var(--tx2);font-size:13px">Nix.js — a signal-based micro-framework. v1.9.0</p></div>` },
-    { path: '/users/:id', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">👤 User <span style="color:var(--ac2)">#${() => params.value.id}</span></h4><div class="row">${[1,7,42,99].map(id => html`<button class="btn btn-o btn-sm" @click=${() => nav('/users/'+id)}>User ${id}</button>`)}</div></div>` },
+    { path: '/users/:id', render: () => html`<div><h4 style="font-family:var(--head);font-size:16px;color:#fff;margin-bottom:6px">👤 User <span style="color:var(--ac2)">#${() => params.value.id}</span></h4><div class="row">${[1, 7, 42, 99].map(id => html`<button class="btn btn-o btn-sm" @click=${() => nav('/users/' + id)}>User ${id}</button>`)}</div></div>` },
   ];
 
   function matchRoute(path: string) {
@@ -403,17 +403,17 @@ export function DemoStore(): NixTemplate {
       name: 'demo-cart',
       actions: (s) => ({
         add(p: Product) {
-          s.items.update(a => {
-            const ex = a.find(i => i.id === p.id);
-            return ex ? a.map(i => i.id === p.id ? { ...i, qty: i.qty + 1 } : i) : [...a, { ...p, qty: 1 }];
-          });
+          const ex = s.items.value.find(i => i.id === p.id);
+          s.items.value = ex
+            ? s.items.value.map(i => i.id === p.id ? { ...i, qty: i.qty + 1 } : i)
+            : [...s.items.value, { ...p, qty: 1 }];
         },
-        remove(id: number) { s.items.update(a => a.filter(i => i.id !== id)); },
+        remove(id: number) { s.items.value = s.items.value.filter(i => i.id !== id); },
       }),
       getters: (s) => ({
         subtotal: computed(() => s.items.value.reduce((sum, i) => sum + i.price * i.qty, 0)),
-        count:    computed(() => s.items.value.reduce((sum, i) => sum + i.qty, 0)),
-        total:    computed(() => s.items.value.reduce((sum, i) => sum + i.price * i.qty, 0) * (1 - s.discount.value / 100)),
+        count: computed(() => s.items.value.reduce((sum, i) => sum + i.qty, 0)),
+        total: computed(() => s.items.value.reduce((sum, i) => sum + i.price * i.qty, 0) * (1 - s.discount.value / 100)),
       }),
     }
   );
@@ -454,8 +454,8 @@ export function DemoStore(): NixTemplate {
             CART <span style="color:var(--ac2)">${() => store.count.value} items</span>
           </div>
           ${() => store.items.value.length === 0
-            ? html`<div style="color:var(--tx3);font-size:13px">Empty — add products</div>`
-            : html`
+      ? html`<div style="color:var(--tx3);font-size:13px">Empty — add products</div>`
+      : html`
                 ${() => repeat(store.items.value, i => i.id, i => html`
                   <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px">
                     <span style="color:var(--tx2)">${i.name}×${i.qty}</span>
@@ -478,7 +478,7 @@ export function DemoStore(): NixTemplate {
                 </div>
                 <button class="btn btn-o btn-sm" style="width:100%;margin-top:7px" @click=${() => store.$reset()}>Clear</button>
               `
-          }
+    }
           <div style="margin-top:10px;font-size:11px;color:var(--tx3);font-family:var(--mono)">
             $watch → <span style="color:var(--ac2)">${() => log.value}</span>
           </div>
@@ -566,19 +566,19 @@ export function DemoAsync(): NixTemplate {
       </div>
       <div style="min-height:80px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:14px">
         ${() => {
-          switch (state.value) {
-            case 'idle': return html`<div style="color:var(--tx3);font-size:13px">Press Fetch to load data…</div>`;
-            case 'loading': return html`<div style="display:flex;gap:10px;align-items:center"><div style="width:15px;height:15px;border:2px solid var(--ac2);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></div><span style="color:var(--tx2);font-size:13px">Fetching…</span></div>`;
-            case 'error': return html`<div style="color:var(--red)"><div style="font-weight:600;margin-bottom:4px">✕ Error</div><div style="font-family:var(--mono);font-size:12px">${() => errMsg.value}</div><button class="btn btn-o btn-sm" style="margin-top:8px" @click=${load}>Retry</button></div>`;
-            case 'success': return html`${() => repeat(data.value ?? [], u => u.id, u => html`
+      switch (state.value) {
+        case 'idle': return html`<div style="color:var(--tx3);font-size:13px">Press Fetch to load data…</div>`;
+        case 'loading': return html`<div style="display:flex;gap:10px;align-items:center"><div style="width:15px;height:15px;border:2px solid var(--ac2);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></div><span style="color:var(--tx2);font-size:13px">Fetching…</span></div>`;
+        case 'error': return html`<div style="color:var(--red)"><div style="font-weight:600;margin-bottom:4px">✕ Error</div><div style="font-family:var(--mono);font-size:12px">${() => errMsg.value}</div><button class="btn btn-o btn-sm" style="margin-top:8px" @click=${load}>Retry</button></div>`;
+        case 'success': return html`${() => repeat(data.value ?? [], u => u.id, u => html`
               <div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd)">
                 <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac3));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0">${u.name[0]}</div>
                 <div><div style="font-size:13px;color:var(--tx)">${u.name}</div><div style="font-size:11px;color:var(--ac2);font-family:var(--mono)">${u.role}</div></div>
               </div>
             `)}`;
-            default: return null;
-          }
-        }}
+        default: return null;
+      }
+    }}
       </div>
     </div>
   `;

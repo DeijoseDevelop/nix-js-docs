@@ -18,7 +18,7 @@ export function InstallPage(): NixTemplate {
       <script type="importmap">
         {
             "imports": {
-              "@deijose/nix-js": "https://cdn.jsdelivr.net/npm/@deijose/nix-js@2.2.2/+esm"
+              "@deijose/nix-js": "https://cdn.jsdelivr.net/npm/@deijose/nix-js@2.3.0/+esm"
             }
           }
         </script>

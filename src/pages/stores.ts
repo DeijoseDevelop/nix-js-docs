@@ -5,13 +5,13 @@ import { S } from '../data/snippets';
 import { DemoStore } from '../components/demos';
 
 export function StoresPage(): NixTemplate {
-  return html`
+    return html`
         <div>
             <h2 class="page-title">
                 Global Stores
             </h2>
             <p class="page-sub">
-                Reactive global state with <code>createStore()</code>. Every property becomes a <code>Signal</code>. Actions, computed getters, plugins, and cross-store bridges — all in one unified options object.
+                Reactive global state with <code>createStore()</code>. Every property becomes a <code>Signal</code>. Actions, computed getters, plugins, and cross-store bridges — all in one options object. Use <code>$state</code> for reactive reads and <code>$snapshot()</code> for passive one-shot reads inside plugins and loggers.
             </p>
 
             <h3>
@@ -105,7 +105,15 @@ export function StoresPage(): NixTemplate {
                             <code>store.$state</code>
                         </td>
                         <td>
-                            Reactive read-only snapshot of all values
+                            Reactive snapshot — creates subscription when read inside <code>effect</code>/<code>computed</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <code>store.$snapshot()</code>
+                        </td>
+                        <td>
+                            Passive snapshot — returns current values without creating a reactive subscription. Use in plugins, loggers, and persistence layers
                         </td>
                     </tr>
                     <tr>

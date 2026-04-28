@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@deijose/nix-js": "^2.2.2"
+    "@deijose/nix-js": "^2.3.0"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
