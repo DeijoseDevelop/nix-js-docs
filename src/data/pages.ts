@@ -23,5 +23,6 @@ export const PAGES: PageMeta[] = [
   { id: 'testing', label: 'Testing', grp: 'Tooling' },
   { id: 'cli', label: 'CLI', grp: 'Tooling' },
   { id: 'comparison', label: 'Comparison', grp: 'Reference' },
+  { id: 'migration', label: 'Migration Guides', grp: 'Reference' },
   { id: 'api', label: 'API Reference', grp: 'Reference' },
 ];

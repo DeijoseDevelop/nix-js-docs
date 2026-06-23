@@ -20,6 +20,7 @@ import { TransitionsPage } from './pages/transitions';
 import { ErrorsPage } from './pages/errors';
 import { ShowPage } from './pages/show';
 import { ComparisonPage } from './pages/comparison';
+import { MigrationPage } from './pages/migration';
 import { APIPage } from './pages/api';
 import { HMRPage } from './pages/hmr';
 import { TestingPage } from './pages/testing';
@@ -44,6 +45,7 @@ const PAGE_MAP: Record<string, any> = {
   testing: TestingPage,
   cli: CLIPage,
   comparison: ComparisonPage,
+  migration: MigrationPage,
   api: APIPage,
 };
 

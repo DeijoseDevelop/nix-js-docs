@@ -271,24 +271,29 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
   backdrop-filter: blur(4px);
 }
+
 #menu-btn:hover {
   background: rgba(124, 106, 247, .2);
   border-color: var(--ac2);
   transform: translateY(-1px);
 }
+
 #menu-btn:active {
   background: rgba(124, 106, 247, .3);
   transform: translateY(0);
 }
+
 #menu-btn span {
   color: var(--ac2);
 }
+
 #menu-btn .burger {
   display: flex;
   flex-direction: column;
   gap: 3.5px;
   width: 15px;
 }
+
 #menu-btn .burger div {
   height: 1.5px;
   background: var(--ac2);
@@ -1347,5 +1352,82 @@ pre::-webkit-scrollbar-thumb {
 
   .hero-acts .btn {
     justify-content: center
+  }
+}
+
+/* ── MIGRATION PAGE ── */
+.tabbar {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0 24px;
+  border-bottom: 1px solid var(--bd)
+}
+
+.tabbar .tab {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  color: var(--tx2);
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s
+}
+
+.tabbar .tab:hover {
+  color: var(--tx)
+}
+
+.tabbar .tab.on {
+  color: var(--ac2);
+  border-bottom-color: var(--ac2)
+}
+
+.migrate-section h3 {
+  margin-top: 28px
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 16px 0
+}
+
+.two-col .code-block {
+  min-width: 0
+}
+
+.migrate-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px
+}
+
+.migrate-table th,
+.migrate-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border: 1px solid var(--bd)
+}
+
+.migrate-table th {
+  background: var(--bg2);
+  color: #fff;
+  font-weight: 600
+}
+
+.migrate-table code {
+  font-family: var(--mono);
+  color: var(--ac2);
+  font-size: 12px
+}
+
+@media(max-width:900px) {
+  .two-col {
+    grid-template-columns: 1fr
   }
 }
