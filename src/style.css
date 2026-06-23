@@ -16,9 +16,9 @@
   --tx3: #4e4e6e;
   --navw: 258px;
   --r: 10px;
-  --mono: 'DM Mono', monospace;
-  --head: 'Fraunces', serif;
-  --body: 'DM Sans', sans-serif;
+  --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --head: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 *,

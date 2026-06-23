@@ -21,6 +21,9 @@ import { ErrorsPage } from './pages/errors';
 import { ShowPage } from './pages/show';
 import { ComparisonPage } from './pages/comparison';
 import { APIPage } from './pages/api';
+import { HMRPage } from './pages/hmr';
+import { TestingPage } from './pages/testing';
+import { CLIPage } from './pages/cli';
 
 const PAGE_MAP: Record<string, any> = {
   intro: IntroPage,
@@ -37,6 +40,9 @@ const PAGE_MAP: Record<string, any> = {
   transitions: TransitionsPage,
   errors: ErrorsPage,
   show: ShowPage,
+  hmr: HMRPage,
+  testing: TestingPage,
+  cli: CLIPage,
   comparison: ComparisonPage,
   api: APIPage,
 };
