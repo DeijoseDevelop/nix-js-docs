@@ -12,11 +12,11 @@ export function IntroPage(): NixTemplate {
   return html`
     <div>
       <div class="hero">
-        <div class="eyebrow">Documentation · v2.3.0</div>
+        <div class="eyebrow">Documentation · v2.5.3</div>
         <h1>Nix<em>.</em>js</h1>
         <p class="hero-desc">A signal-based micro-framework for building modern web UIs. No virtual DOM, no compiler, no build-time magic — just signals, tagged templates, and pure TypeScript.</p>
         <div class="hero-tags">
-          <span class="badge"><span class="bdot" style="background:var(--green)"></span>524 tests passing</span>
+          <span class="badge"><span class="bdot" style="background:var(--green)"></span>546 tests passing</span>
       <span class="badge"><span class="bdot" style="background:var(--green)"></span>95.86% Coverage</span>
           <span class="badge"><span class="bdot" style="background:var(--ac3)"></span>~12 KB gzipped</span>
           <span class="badge"><span class="bdot" style="background:var(--ac2)"></span>TypeScript-first</span>

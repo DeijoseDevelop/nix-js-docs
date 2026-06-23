@@ -397,7 +397,7 @@ function DashboardPage(): NixTemplate {
       .setSlot('header', html\`<h1>Dashboard</h1>\`)
       .setSlot('nav',    html\`<nav><a href="/">Home</a></nav>\`)
       .setChildren(      html\`<p>Main dashboard content here</p>\`)
-      .setSlot('footer', html\`<small>Nix.js v1.9.0</small>\`)
+      .setSlot('footer', html\`<small>Nix.js v2.5.3</small>\`)
     }
   \`;
 }`.trim();
@@ -1390,7 +1390,7 @@ const userStore = createStore(
     name: 'user',
     plugins: [
       analyticsPlugin('user_state_change'),
-      // Example of native v2.2.2 persistence with debounce and custom adapter
+      // Example of native v2.5.3 persistence with debounce and custom adapter
       persistPlugin('nix_user', {
         debounce: 300,
         storage: sessionStorage, // or any item with getItem/setItem

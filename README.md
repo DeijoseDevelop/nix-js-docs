@@ -15,6 +15,7 @@ This documentation site avoids "documentation generators" and is instead built a
 - **Code Splitting**: Native `lazy()` loading for pages.
 - **Advanced State**: Form validation and global stores.
 - **Custom Components**: Clean, reusable `NixComponent` classes.
+- **Vite Plugin**: Powered by `@deijose/vite-plugin-nix-js` for optimized builds and HMR.
 
 ## 🚀 Development
 
@@ -45,10 +46,14 @@ npm run build
 - **[Framework Core →](https://www.npmjs.com/package/@deijose/nix-js)**: The `@deijose/nix-js` package on NPM.
 - **[Main Repository →](https://github.com/DeijoseDevelop/nix-js)**: Source code for the micro-framework.
 - **[Nix.js + Ionic →](https://github.com/DeijoseDevelop/nix-ionic)**: Build native mobile apps with Nix.js reactivity and Ionic components.
+- **[Nix Query →](https://www.npmjs.com/package/@deijose/nix-query)**: CQRS-style async state orchestration.
+- **[Nix UI →](https://ui.nix-js.dev/)**: Headless UI primitives and accessibility utilities.
+- **[Nix.js Testing →](https://www.npmjs.com/package/@deijose/nix-js-testing)**: Testing utilities for Nix.js components.
+- **[Vite Plugin →](https://www.npmjs.com/package/@deijose/vite-plugin-nix-js)**: Official Vite plugin for Nix.js.
 - **[Performance Benchmark →](https://github.com/DeijoseDevelop/nix-js-framework-benchmark)**: Real-world stress testing results.
 - **[Nix CLI →](https://github.com/DeijoseDevelop/create-nix-app)**: Scaffold new projects instantly.
 
 ---
 
 *Built with passion by [Deiver Vasquez](https://github.com/DeijoseDevelop).*
-*Nix.js v1.9.0*
+*Nix.js v2.5.3*

@@ -21,9 +21,9 @@ export function APIPage(): NixTemplate {
             <td>Create a reactive value container</td>
           </tr>
           <tr>
-            <td><code>computed&lt;T&gt;(fn)</code></td>
+            <td><code>computed&lt;T&gt;(fn, equals?)</code></td>
             <td>Signal&lt;T&gt; (readonly)</td>
-            <td>Derived reactive value, lazily cached</td>
+            <td>Derived reactive value, lazily cached. Optional <code>equals</code> comparator (default <code>Object.is</code>)</td>
           </tr>
           <tr>
             <td><code>effect(fn)</code></td>
@@ -282,7 +282,11 @@ export function APIPage(): NixTemplate {
           </tr>
           <tr>
             <td><code>lazy(importFn, fallback?)</code></td>
-            <td>Dynamic import with caching for code splitting</td>
+            <td>Dynamic import with caching for code splitting (default export)</td>
+          </tr>
+          <tr>
+            <td><code>lazy(importFn, { selector })</code></td>
+            <td>Named-export dynamic import: <code>selector: (mod) =&gt; mod.NamedComponent</code></td>
           </tr>
         </table>
       </div>
@@ -367,6 +371,54 @@ export function APIPage(): NixTemplate {
           <tr>
             <td><code>showWhen(el, condition)</code></td>
             <td>Imperative show/hide via style.display</td>
+          </tr>
+        </table>
+      </div>
+    
+      <h3>DevTools</h3>
+      <div class="tbl">
+        <table>
+          <tr>
+            <th>Export</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><code>enableDevTools(opts?)</code></td>
+            <td>In-browser overlay for signals and router inspection. Options: <code>initiallyOpen</code>, <code>position</code>, <code>refreshMs</code>, <code>historyLimit</code></td>
+          </tr>
+          <tr>
+            <td><code>disable()</code></td>
+            <td>Return value from <code>enableDevTools</code>; call to remove the overlay</td>
+          </tr>
+        </table>
+      </div>
+    
+      <h3>Ecosystem Packages</h3>
+      <div class="tbl">
+        <table>
+          <tr>
+            <th>Package</th>
+            <th>Purpose</th>
+          </tr>
+          <tr>
+            <td><code>@deijose/nix-query</code></td>
+            <td>CQRS-style async requests, cache, retries, offline queue</td>
+          </tr>
+          <tr>
+            <td><code>@deijose/nix-ui</code></td>
+            <td>Headless UI primitives and accessibility utilities</td>
+          </tr>
+          <tr>
+            <td><code>@deijose/nix-ionic</code></td>
+            <td>Ionic lifecycle and router bridge for mobile apps</td>
+          </tr>
+          <tr>
+            <td><code>@deijose/nix-js-testing</code></td>
+            <td>Component testing utilities: <code>render</code>, <code>fireEvent</code>, <code>screen</code>, <code>waitFor</code></td>
+          </tr>
+          <tr>
+            <td><code>@deijose/vite-plugin-nix-js</code></td>
+            <td>Official Vite plugin for builds, HMR, and template transforms</td>
           </tr>
         </table>
       </div>
