@@ -25,6 +25,10 @@ import { APIPage } from './pages/api';
 import { HMRPage } from './pages/hmr';
 import { TestingPage } from './pages/testing';
 import { CLIPage } from './pages/cli';
+import { AuthPage } from './pages/auth';
+import { I18nPage } from './pages/i18n';
+import { QueryPage } from './pages/query';
+import { IonicPage } from './pages/ionic';
 
 const PAGE_MAP: Record<string, any> = {
   intro: IntroPage,
@@ -47,6 +51,10 @@ const PAGE_MAP: Record<string, any> = {
   comparison: ComparisonPage,
   migration: MigrationPage,
   api: APIPage,
+  auth: AuthPage,
+  i18n: I18nPage,
+  query: QueryPage,
+  ionic: IonicPage,
 };
 
 // ── App Component ──────────────────────────────────────────
