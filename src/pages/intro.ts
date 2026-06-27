@@ -18,7 +18,7 @@ export function IntroPage(): NixTemplate {
         <div class="hero-tags">
           <span class="badge"><span class="bdot" style="background:var(--green)"></span>546 tests passing</span>
       <span class="badge"><span class="bdot" style="background:var(--green)"></span>95.86% Coverage</span>
-          <span class="badge"><span class="bdot" style="background:var(--ac3)"></span>~12 KB gzipped</span>
+          <span class="badge"><span class="bdot" style="background:var(--ac3)"></span>~14 KB gzipped</span>
           <span class="badge"><span class="bdot" style="background:var(--ac2)"></span>TypeScript-first</span>
           <span class="badge"><span class="bdot" style="background:var(--gold)"></span>Zero dependencies</span>
         </div>
@@ -36,7 +36,7 @@ export function IntroPage(): NixTemplate {
       <div class="cards">
         <div class="card"><span class="card-ic">⚡</span><div class="card-t">Fine-Grained Reactivity</div><div class="card-d">Each binding creates at most one effect. Signal changes produce surgical DOM patches.</div></div>
         <div class="card"><span class="card-ic">🚫</span><div class="card-t">No Compiler Required</div><div class="card-d">Templates are standard JS tagged template literals. Zero build-time transforms needed.</div></div>
-        <div class="card"><span class="card-ic">📦</span><div class="card-t">Zero Dependencies</div><div class="card-d">~12 KB gzipped. Router, forms, stores, DI, portals — all included in that budget.</div></div>
+        <div class="card"><span class="card-ic">📦</span><div class="card-t">Zero Dependencies</div><div class="card-d">~14 KB gzipped. Router, forms, stores, DI, portals — all included in that budget.</div></div>
         <div class="card"><span class="card-ic">🔷</span><div class="card-t">TypeScript-First</div><div class="card-d">Every public API is fully typed. Typed injection keys, typed store signals, typed router params.</div></div>
         <div class="card"><span class="card-ic">🎯</span><div class="card-t">Surgical DOM Updates</div><div class="card-d">Each interpolation inside html creates at most one effect. One signal → one DOM node.</div></div>
         <div class="card"><span class="card-ic">🔄</span><div class="card-t">Batteries Included</div><div class="card-d">What React/Vue need 3–5 extra packages for, Nix.js ships out of the box.</div></div>
