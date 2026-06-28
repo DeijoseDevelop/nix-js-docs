@@ -95,14 +95,27 @@ export function FormsPage(): NixTemplate {
             <td>Inject server-side errors (supports dot-path keys)</td>
           </tr>
           <tr>
-            <td><code>form.reset()</code></td>
+            <td><code>form.setValue(path, value, opts?)</code></td>
             <td>void</td>
-            <td>Restore initial values</td>
+            <td>Set one field by top-level or dot-path. Options: <code>shouldDirty</code>, <code>shouldTouch</code>, <code>shouldValidate</code></td>
+          </tr>
+          <tr>
+            <td><code>form.setValues(values, opts?)</code></td>
+            <td>void</td>
+            <td>Set multiple fields at once. Options: <code>keepDirty</code>, <code>keepTouched</code>, <code>keepErrors</code></td>
+          </tr>
+          <tr>
+            <td><code>form.reset(newValues?)</code></td>
+            <td>void</td>
+            <td>Restore initial values. When given an argument, it becomes the new baseline</td>
           </tr>
         </table>
       </div>
-    
-    
+
+      <h3>Programmatic Value Manipulation</h3>
+      <p>Load data after fetching, pre-fill forms, or reset to a new baseline without touching every field manually.</p>
+      ${new CodeBlock(S.forms_programmatic)}
+
       <h3>Built-in Validators</h3>
       <div class="tbl">
         <table>
@@ -156,7 +169,11 @@ export function FormsPage(): NixTemplate {
       <h3>Dynamic Field Arrays</h3>
       <p>Manage dynamic lists of field groups with <code>nixFieldArray()</code>.</p>
       ${new CodeBlock(S.form_array)}
-    
+
+      <h3>Array Value Manipulation</h3>
+      <p>Replace, patch, or reset the whole array without rebuilding the template manually.</p>
+      ${new CodeBlock(S.forms_array_programmatic)}
+
       <div class="cl cl-t"><span class="cl-ic">💡</span>
         <p>Custom validators are simple functions: <code>(value: T, allValues?: FormValues) =&gt; string | null</code>.
           Returning <code>null</code> means valid, a string is the error message.</p>

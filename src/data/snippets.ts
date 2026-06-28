@@ -1009,6 +1009,82 @@ function GuestListForm(): NixTemplate {
   \`;
 }`.trim();
 
+S.forms_programmatic = `
+function EditEventForm(): NixTemplate {
+  const form = createForm(
+    { title: '', date: '', guests: [] as string[] },
+    { validators: { title: [required()] } }
+  );
+
+  // Load existing data after fetching
+  async function loadEvent(id: string) {
+    const event = await api.getEvent(id);
+
+    // Replace all values and reset the baseline
+    form.reset(event);
+
+    // Or patch only some fields without touching others
+    form.setValues({ title: event.title }, { keepTouched: true, keepErrors: true });
+  }
+
+  // Set a single nested field
+  form.setValue('title', 'Updated title', { shouldDirty: true });
+
+  return html\`
+    <form @submit=\${form.handleSubmit(async values => {
+      await api.saveEvent(values);
+    })}>
+      <input
+        value=\${() => form.fields.title.value.value}
+        @input=\${form.fields.title.onInput}
+        @blur=\${form.fields.title.onBlur}
+      />
+      \${() => form.fields.title.error.value
+        ? html\`<span class="err">\${form.fields.title.error.value}</span>\`
+        : null}
+      <button type="submit">Save</button>
+    </form>
+  \`;
+}`.trim();
+
+S.forms_array_programmatic = `
+function EditGuestList(): NixTemplate {
+  const guests = nixFieldArray(
+    [{ name: '', email: '' }],
+    { name: [required()], email: [required(), email()] }
+  );
+
+  // Replace the whole list
+  guests.setValues([
+    { name: 'Alice', email: 'alice@example.com' },
+    { name: 'Bob', email: 'bob@example.com' },
+  ]);
+
+  // Patch existing items and append extras (preserves untouched state)
+  guests.patchValues([
+    { name: 'Alice Smith' },
+    { name: 'Charlie', email: 'charlie@example.com' },
+  ]);
+
+  // Reset to a new baseline
+  guests.reset([{ name: '', email: '' }]);
+
+  return html\`
+    <div>
+      \${() => repeat(guests.fields.value, (_, i) => i, (group, i) => html\`
+        <div class="guest-row">
+          <input value=\${() => group.name.value.value} @input=\${group.name.onInput} />
+          <input value=\${() => group.email.value.value} @input=\${group.email.onInput} />
+          <button type="button" @click=\${() => guests.remove(i)}>Remove</button>
+        </div>
+      \`)}
+      <button type="button" @click=\${() => guests.append({ name: '', email: '' })}>
+        + Add guest
+      </button>
+    </div>
+  \`;
+}`.trim();
+
 S.suspend_fn = `
 function ProductsPage(): NixTemplate {
   const refresh = signal(0);
