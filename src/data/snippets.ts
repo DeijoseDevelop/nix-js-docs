@@ -3270,6 +3270,27 @@ const posts = createQuery("posts", () =>
 posts.refetch();
 `.trim();
 
+S.nix_query_params = `
+import { createQuery } from "@deijose/nix-query";
+import { signal } from "@deijose/nix-js";
+
+const search = signal("");
+const page = signal(1);
+
+const posts = createQuery(
+  "posts",
+  ({ q, page }) =>
+    fetch(\`/api/posts?q=\${encodeURIComponent(q)}&page=\${page}\`).then((r) => r.json()),
+  {
+    params: () => ({ q: search.value, page: page.value }),
+    staleTime: 30_000,
+  }
+);
+
+// Changing any signal triggers an automatic refetch
+search.value = "nix";
+`.trim();
+
 S.ionic_install = `
 npm install @deijose/nix-ionic @deijose/nix-js @ionic/core
 

@@ -20,6 +20,7 @@ export function QueryPage(): NixTemplate {
                 <ul>
                     <li><strong>Signal-based queries</strong> — <code>status</code>, <code>data</code>, and <code>error</code> are reactive signals that update the UI automatically.</li>
                     <li><strong>Global key cache</strong> — queries share a global cache keyed by string. Mounting the same key reuses cached data instantly.</li>
+                    <li><strong>Reactive params</strong> — track signals in <code>options.params</code> and auto-refetch when they change, with independent cache per params value.</li>
                     <li><strong>Imperative cache manipulation</strong> — <code>getQueryData</code>, <code>setQueryData</code>, <code>updateQueryData</code>, and <code>invalidateQueries</code>.</li>
                     <li><strong>Commands with modes</strong> — <code>latest</code>, <code>queue</code>, <code>parallel</code>, and <code>queueOffline</code> for different concurrency strategies.</li>
                     <li><strong>Retry with backoff</strong> — configurable per command with custom delay functions.</li>
@@ -61,8 +62,18 @@ export function QueryPage(): NixTemplate {
                     <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
                     <tr><td><code>staleTime</code></td><td><code>number</code></td><td><code>0</code></td><td>Time in ms that cached data is considered fresh. While fresh, mounting does not trigger a background refetch.</td></tr>
                     <tr><td><code>refetchOnMount</code></td><td><code>"always" | "stale" | false</code></td><td><code>"always"</code></td><td>"always" — refetch every mount. "stale" — refetch only when staleTime exceeded. <code>false</code> — never refetch on mount.</td></tr>
+                    <tr><td><code>params</code></td><td><code>() => P</code></td><td></td><td>Reactive params source. Read signals inside this function. When they change, the query recomputes its cache key and refetches automatically. The fetcher receives the current params.</td></tr>
                 </table>
             </div>
+
+            <h4>Reactive Params</h4>
+            <p>
+                Pass <code>params</code> to derive the cache key from reactive signals. Read any signals inside the function: whenever they change, the query recomputes its key and refetches automatically. Each distinct params value is cached independently, so revisiting previous params serves cached data instantly.
+            </p>
+            ${new CodeBlock(S.nix_query_params)}
+            <p>
+                The effective cache key is <code>key::&lt;stable-serialized-params&gt;</code>. Object key order does not matter. If params serialize to the same value, no refetch occurs (deduped). In-flight responses for stale params are ignored to prevent race conditions.
+            </p>
 
             <h4>Refetching</h4>
             <p>
@@ -243,7 +254,7 @@ export function QueryPage(): NixTemplate {
             <h4>Queries</h4>
             <div class="ul">
                 <ul>
-                    <li><code>createQuery(key, asyncFn, options?)</code> — key-based async read with cache and signals.</li>
+                    <li><code>createQuery(key, asyncFn, options?)</code> — key-based async read with cache and signals. <code>asyncFn</code> receives <code>params</code> when <code>options.params</code> is provided.</li>
                     <li><code>invalidateQueries(key)</code> — force re-fetch for all active instances of a key.</li>
                     <li><code>clearQueryCache(key?)</code> — remove one or all entries from cache.</li>
                     <li><code>setQueryCacheTime(ms)</code> — configure garbage collection retention.</li>
