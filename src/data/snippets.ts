@@ -3127,15 +3127,27 @@ setQueryData("users/list", [...(users ?? []), { id: 3, name: "Mia" }]);
 updateQueryData("users/list", (current = []) =>
   current.map((u) => (u.id === 3 ? { ...u, name: "Mia V2" } : u))
 );
+
+// When the query uses params, target the param-scoped key with { params }
+const eventId = "abc";
+setQueryData(
+  "events/checklist",
+  [{ id: 1, label: "Helmet", required: true }],
+  { params: { id: eventId } }
+);
+
+// Or use the exact effective key exposed by the query
+// setQueryData(eventQuery.key, [...]);
 `.trim();
 
 S.nix_query_invalidate = `
 import { invalidateQueries, clearQueryCache, setQueryCacheTime } from "@deijose/nix-query";
 
 // Force all active "posts" queries to re-fetch
+// Also invalidates every param-scoped variant (posts::{"q":"nix"}, etc.)
 invalidateQueries("posts");
 
-// Remove one key from cache
+// Remove one key and all its param-scoped variants from cache
 clearQueryCache("posts");
 
 // Remove ALL keys from cache
@@ -3206,7 +3218,7 @@ saveProfile.isQueued.value;  // status === "queued"
 `.trim();
 
 S.nix_command_optimistic = `
-import { createCommand, getQueryData, setQueryData } from "@deijose/nix-query";
+import { createCommand, getQueryData, setQueryData, updateQueryData } from "@deijose/nix-query";
 
 type Item = { id: number; title: string };
 
@@ -3230,8 +3242,11 @@ const createItem = createCommand(
       setQueryData("items/list", context?.previous ?? []);
     },
     onSuccess: (data) => {
-      // invalidate related queries
+      // Option A: invalidate related queries (forces refetch)
       invalidateQueries("items/list");
+
+      // Option B: update cache locally without a refetch (when the API returns the new item)
+      // updateQueryData<Item[]>("items/list", (current = []) => [...current, data]);
     },
   }
 );

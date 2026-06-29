@@ -46,13 +46,15 @@ export function QueryPage(): NixTemplate {
             </p>
             ${new CodeBlock(S.nix_query_basic)}
 
-            <h4>QueryResult signals</h4>
+            <h4>QueryResult</h4>
             <div class="tbl">
                 <table>
-                    <tr><th>Signal</th><th>Type</th><th>Description</th></tr>
+                    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                    <tr><td><code>q.key</code></td><td><code>string</code></td><td>Effective cache key. Includes serialized params when <code>options.params</code> is used (e.g. <code>posts::{"q":"nix"}</code>).</td></tr>
                     <tr><td><code>q.status</code></td><td><code>Signal&lt;"pending" | "success" | "error"&gt;</code></td><td>Current fetch status.</td></tr>
                     <tr><td><code>q.data</code></td><td><code>Signal&lt;T | undefined&gt;</code></td><td>Fetched data on success.</td></tr>
                     <tr><td><code>q.error</code></td><td><code>Signal&lt;unknown&gt;</code></td><td>Error if the fetch failed.</td></tr>
+                    <tr><td><code>q.refetch()</code></td><td><code>() => void</code></td><td>Bypass cache and fetch fresh data immediately.</td></tr>
                 </table>
             </div>
 
@@ -90,14 +92,17 @@ export function QueryPage(): NixTemplate {
             ${new CodeBlock(S.nix_query_cache)}
 
             <h4>Cache utilities</h4>
+            <p>
+                When a query uses <code>params</code>, its cache key becomes <code>baseKey::&lt;serializedParams&gt;</code>. Cache helpers accept an optional <code>{ params }</code> object to target that key, or you can use the exact <code>query.key</code>.
+            </p>
             <div class="tbl">
                 <table>
                     <tr><th>Function</th><th>Description</th></tr>
-                    <tr><td><code>getQueryData&lt;T&gt;(key)</code></td><td>Read the current cached value for a key. Returns <code>undefined</code> if absent.</td></tr>
-                    <tr><td><code>setQueryData(key, value)</code></td><td>Overwrite the cache entry and notify active queries.</td></tr>
-                    <tr><td><code>updateQueryData(key, updater)</code></td><td>Atomically update from the previous value and notify active queries.</td></tr>
-                    <tr><td><code>invalidateQueries(key)</code></td><td>Clear the cache for a key and force all active instances to re-fetch.</td></tr>
-                    <tr><td><code>clearQueryCache(key?)</code></td><td>Remove one key (or all keys if no argument) from the cache.</td></tr>
+                    <tr><td><code>getQueryData&lt;T&gt;(key, options?)</code></td><td>Read the current cached value for a key. Pass <code>{ params }</code> to read a param-scoped entry.</td></tr>
+                    <tr><td><code>setQueryData(key, value, options?)</code></td><td>Overwrite the cache entry and notify active queries. Pass <code>{ params }</code> to target a param-scoped entry.</td></tr>
+                    <tr><td><code>updateQueryData(key, updater, options?)</code></td><td>Atomically update from the previous value and notify active queries. Pass <code>{ params }</code> to target a param-scoped entry.</td></tr>
+                    <tr><td><code>invalidateQueries(key)</code></td><td>Clear the cache for a key and force all active instances to re-fetch. Also clears every param-scoped variant.</td></tr>
+                    <tr><td><code>clearQueryCache(key?)</code></td><td>Remove one key (or all keys if no argument) from the cache. Also clears every param-scoped variant.</td></tr>
                     <tr><td><code>setQueryCacheTime(ms)</code></td><td>Set how long zero-subscriber entries are kept. Default is 5 minutes. Pass <code>Infinity</code> to keep forever.</td></tr>
                 </table>
             </div>
@@ -258,9 +263,10 @@ export function QueryPage(): NixTemplate {
                     <li><code>invalidateQueries(key)</code> — force re-fetch for all active instances of a key.</li>
                     <li><code>clearQueryCache(key?)</code> — remove one or all entries from cache.</li>
                     <li><code>setQueryCacheTime(ms)</code> — configure garbage collection retention.</li>
-                    <li><code>getQueryData(key)</code> — read cached data without creating a query.</li>
-                    <li><code>setQueryData(key, value)</code> — write data to cache and sync signals.</li>
-                    <li><code>updateQueryData(key, updater)</code> — atomically update cached data.</li>
+                    <li><code>getQueryData(key, options?)</code> — read cached data without creating a query.</li>
+                    <li><code>setQueryData(key, value, options?)</code> — write data to cache and sync signals.</li>
+                    <li><code>updateQueryData(key, updater, options?)</code> — atomically update cached data.</li>
+                    <li><code>query.key</code> — effective cache key, useful for direct cache manipulation.</li>
                 </ul>
             </div>
 
